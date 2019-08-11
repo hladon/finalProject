@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <div class="left">
+        <h1>Photo</h1>
+        <div>
+            <button class="btn">Send message</button>
+        </div>
+    </div>
+
+    <div class="right">
+        <p th:text="${user.firstName}"></p>
+        <p th:text="${user.city}"></p>
+
+    </div>
+</div>
+
+</body>
+<style>
+    .left{
+        float:left;
+        width: 200px;
+        height: 300px;
+        border-style: solid;
+    }
+    .right{
+        margin-left: 380px;
+    }
+    .btn{
+        margin-top: 200px;
+    }
+</style>
+</html>
