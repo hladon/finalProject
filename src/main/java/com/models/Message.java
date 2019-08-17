@@ -1,4 +1,4 @@
-package com.finPr.models;
+package com.models;
 
 import javax.persistence.*;
 import java.util.Date;

@@ -1,6 +1,6 @@
-package com.finPr.repository;
+package com.repository;
 
-import com.finPr.models.Post;
+import com.models.Post;
 
 public class PostDao extends DAO<Post> {
     public PostDao() {

@@ -1,4 +1,4 @@
-package com.finPr.models;
+package com.models;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -83,14 +83,18 @@ public class User {
     public String getUniversity() {
         return university;
     }
-    @OneToMany(mappedBy = "userFrom")
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "userFrom")
     public List<Message> getMessagesSent() {
         return messagesSent;
     }
-    @OneToMany(mappedBy = "userTo")
+
+
+
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "userTo")
     public List<Message> getMessagesReceived() {
         return messagesReceived;
     }
+
 
     public void setId(Long id) {
         this.id = id;
@@ -150,5 +154,26 @@ public class User {
 
     public void setMessagesReceived(List<Message> messagesReceived) {
         this.messagesReceived = messagesReceived;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", age=" + age +
+                ", dateRegistered=" + dateRegistered +
+                ", dateLastActive=" + dateLastActive +
+                ", relationshipStatus='" + relationshipStatus + '\'' +
+                ", religion='" + religion + '\'' +
+                ", school='" + school + '\'' +
+                ", university='" + university + '\'' +
+                ", messagesSent=" + messagesSent +
+                ", messagesReceived=" + messagesReceived +
+                '}';
     }
 }

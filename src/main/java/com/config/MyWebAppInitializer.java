@@ -1,4 +1,4 @@
-package com.finPr.config;
+package com.config;
 
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;

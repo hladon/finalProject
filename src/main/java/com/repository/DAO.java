@@ -1,4 +1,4 @@
-package com.finPr.repository;
+package com.repository;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,7 @@ public class DAO<T> {
 
     Class<T> type;
 
-    public T findById(int id) {
+    public T findById(long id) {
         return entityManager.find(type, id);
     }
 

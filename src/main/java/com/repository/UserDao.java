@@ -1,6 +1,6 @@
-package com.finPr.repository;
+package com.repository;
 
-import com.finPr.models.User;
+import com.models.User;
 import org.springframework.stereotype.Repository;
 
 @Repository
