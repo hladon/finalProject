@@ -8,9 +8,9 @@
 <body>
 <h1>Welcome!</h1>
 <form id="registration-form">
-    <p>FirstName <input name="firstName"> </p>
+    <p>FirstName <input name="firstName" required> </p>
     <p>LastName <input name="lastName"></p>
-    <p>Phone <input name="phone"></p>
+    <p>Phone <input name="phone" required></p>
     <p>Country <input name="country"> </p>
     <p>City <input name="city"></p>
     <p>Age <input type="number" min="1" max="100" step="1" name="age"></p>
@@ -22,21 +22,20 @@
 </form>
 
 </body>
-<script src="https://code.jquery.com/jquery-3.4.1.slim.js"
-        integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI="
-        crossorigin="anonymous"></script>
-<script>
+<script language="JavaScript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/core.js" ></script>
+<script language="JavaScript" type="text/javascript">
     $("#registration-form").submit(function(e){
-        url:'user-registration',
-        type:"post",
-        data:("#registration-form").serialize(),
-        success: function(data){
-            alert('User was registered!')
-        },
-        error:function(xhr){
+        $.ajax({
+            url:"user-registration",
+        type:"POST",
+        data:$('#registration-form').serialize(),
+        success: function success (data){
+            alert('User was registered!')},
+        error:function error (xhr){
+            alert(xhr.response)
         }
-
-    }
+        });
+    });
 
 </script>
 </html>

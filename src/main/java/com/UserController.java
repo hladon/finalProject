@@ -4,11 +4,14 @@ import com.models.User;
 import com.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.net.URI;
 
 
 @Controller
@@ -38,10 +41,23 @@ public class UserController {
     }
 
 
-    @RequestMapping(path = "/user-registration", method = RequestMethod.GET)
-    public String registerUser(@ModelAttribute User user){
-        userDao.save(user);
-        return "ok";
+    @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
+    public ResponseEntity registerUser(@ModelAttribute User user){
+        try {
+            if (userDao.isExist(user.getPhone())==null){
+                User newUser=userDao.save(user);
+                System.out.println("1");
+                return ResponseEntity.ok(newUser);
+            }else {
+                System.out.println("2");
+                throw new ResponseStatusException(HttpStatus.CONFLICT);
+            }
+        }catch (ResponseStatusException response){
+            System.out.println("3");
+            throw response;
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 //    @RequestMapping(path = "/registration", method = RequestMethod.POST )

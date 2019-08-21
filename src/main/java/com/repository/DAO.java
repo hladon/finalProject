@@ -19,9 +19,9 @@ public class DAO<T> {
         return entityManager.find(type, id);
     }
 
-    public String save(T item) {
+    public T save(T item) {
         entityManager.persist(item);
-        return "Save  done";
+        return item;
     }
 
     public String delete(T item) {
