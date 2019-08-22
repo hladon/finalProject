@@ -20,22 +20,24 @@
     <p> University <input name="university"></p>
     <p>  <input type="submit" value="registration"></p>
 </form>
-
-</body>
 <script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
 <script language="JavaScript" type="text/javascript">
     $("#registration-form").submit(function(e){
         $.ajax({
             url:"user-registration",
-        type:"POST",
-        data:$('#registration-form').serialize(),
-        success: function success (data){
-            alert('User was registered!')},
-        error:function error (xhr){
-            alert(xhr.response)
-        }
+            type:"POST",
+            data:$('#registration-form').serialize(),
+            success: function success (data){
+                debugger;
+                alert('User was registered!')},
+            error:function error (xhr){
+                debugger;
+                alert(xhr.responseText)
+            }
         });
     });
 
 </script>
+</body>
+
 </html>

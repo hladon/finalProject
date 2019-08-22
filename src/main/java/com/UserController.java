@@ -43,16 +43,16 @@ public class UserController {
 
 
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
-    public ResponseEntity<Void> registerUser(@ModelAttribute User user){
+    public ResponseEntity<String> registerUser(@ModelAttribute User user){
         try {
             if (userDao.isExist(user.getPhone())==null){
                 User newUser=userDao.save(user);
-                return ResponseEntity.created(new URI("/user/"+newUser.getId())).build();
+                return new ResponseEntity<String>(HttpStatus.CREATED);
             }else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                return new ResponseEntity<String>("Such user exist!",HttpStatus.CONFLICT);
             }
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
