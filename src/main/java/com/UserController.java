@@ -2,6 +2,7 @@ package com;
 
 import com.models.User;
 import com.repository.UserDao;
+import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,21 +43,16 @@ public class UserController {
 
 
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
-    public ResponseEntity registerUser(@ModelAttribute User user){
+    public ResponseEntity<Void> registerUser(@ModelAttribute User user){
         try {
             if (userDao.isExist(user.getPhone())==null){
                 User newUser=userDao.save(user);
-                System.out.println("1");
-                return ResponseEntity.ok(newUser);
+                return ResponseEntity.created(new URI("/user/"+newUser.getId())).build();
             }else {
-                System.out.println("2");
-                throw new ResponseStatusException(HttpStatus.CONFLICT);
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
-        }catch (ResponseStatusException response){
-            System.out.println("3");
-            throw response;
         }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
