@@ -22,17 +22,17 @@
 </form>
 <script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
 <script language="JavaScript" type="text/javascript">
-    $("#registration-form").submit(function(e){
+    $("#registration-form").submit(function(){
         $.ajax({
             url:"user-registration",
+            dataType: "text",
+            async:false,
             type:"POST",
             data:$('#registration-form').serialize(),
-            success: function success (data){
-                debugger;
-                alert('User was registered!')},
+            success: function success (){
+                alert('User was registered!');},
             error:function error (xhr){
-                debugger;
-                alert(xhr.responseText)
+                alert(xhr.responseText);
             }
         });
     });
