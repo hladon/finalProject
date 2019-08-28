@@ -7,10 +7,12 @@
 <header>Header</header>
 <body>
 <h1>Welcome!</h1>
+<h2>Register new user</h2>
 <form id="registration-form">
     <p>FirstName <input name="firstName" required> </p>
     <p>LastName <input name="lastName"></p>
     <p>Phone <input name="phone" required></p>
+    <p>Password <input name="password" required></p>
     <p>Country <input name="country"> </p>
     <p>City <input name="city"></p>
     <p>Age <input type="number" min="1" max="100" step="1" name="age"></p>
@@ -20,6 +22,7 @@
     <p> University <input name="university"></p>
     <p>  <input type="submit" value="registration"></p>
 </form>
+<a href="">Login</a>
 <script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
 <script language="JavaScript" type="text/javascript">
     $("#registration-form").submit(function(){

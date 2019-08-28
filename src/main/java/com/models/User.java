@@ -11,6 +11,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String phone;
+    private String password;
     //TODO from existed data
     private String country;
     private String city;
@@ -87,8 +88,10 @@ public class User {
     public List<Message> getMessagesSent() {
         return messagesSent;
     }
-
-
+    @Column(name = "USER_PASSWORD")
+    public String getPassword() {
+        return password;
+    }
 
     @OneToMany(cascade=CascadeType.ALL, mappedBy = "userTo")
     public List<Message> getMessagesReceived() {
@@ -156,24 +159,9 @@ public class User {
         this.messagesReceived = messagesReceived;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", country='" + country + '\'' +
-                ", city='" + city + '\'' +
-                ", age=" + age +
-                ", dateRegistered=" + dateRegistered +
-                ", dateLastActive=" + dateLastActive +
-                ", relationshipStatus='" + relationshipStatus + '\'' +
-                ", religion='" + religion + '\'' +
-                ", school='" + school + '\'' +
-                ", university='" + university + '\'' +
-                ", messagesSent=" + messagesSent +
-                ", messagesReceived=" + messagesReceived +
-                '}';
+    public void setPassword(String password) {
+        this.password = password;
     }
+
+
 }

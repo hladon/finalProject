@@ -26,6 +26,16 @@ public class UserController {
         return "index";
     }
 
+    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    public String loginPage(){
+        return "login";
+    }
+
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public String login(){
+        return "login";
+    }
+
     @RequestMapping(path = "/user/{userId}", method = RequestMethod.GET)
     public String profile(Model model, @PathVariable long userId){
         User user=null;
