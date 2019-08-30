@@ -1,24 +1,22 @@
 package com;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.User;
 import com.repository.UserDao;
-import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+
 import javax.servlet.http.HttpSession;
-import java.net.URI;
-import java.util.Date;
+import java.io.InputStream;
+import java.util.Map;
 
 
 @Controller
@@ -41,9 +39,14 @@ public class UserController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public String login(HttpSession session, HttpServletRequest request,
-                        HttpServletResponse response){
-        System.out.println(request.getAttribute("phone"));
+    public ResponseEntity<String> login(HttpSession session, InputStream data){
+        ObjectMapper mapper=new ObjectMapper();
+        try {
+            Map<String,String> map=mapper.readValue(data,Map.class);
+        }catch (Exception e){
+            return new ResponseEntity<String>("Wrong input!",HttpStatus.BAD_REQUEST);
+        }
+
         return "login";
     }
 
@@ -65,38 +68,8 @@ public class UserController {
 
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@ModelAttribute User user){
-        if (!userService.checkUser(user))
-            return new ResponseEntity<>("Wrong phone number!",HttpStatus.BAD_REQUEST);
-        user.setDateRegistered(new Date());
-        try {
-            if (userDao.isExist(user.getPhone())==null){
-                User newUser=userDao.save(user);
-                return new ResponseEntity<String>(HttpStatus.CREATED);
-            }else {
-                return new ResponseEntity<String>("Such user exist!",HttpStatus.CONFLICT);
-            }
-        }catch (Exception e){
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return userService.registerUser(user);
     }
-
-//    @RequestMapping(path = "/registration", method = RequestMethod.POST )
-//    public @ResponseBody String saveUser(){
-//
-//        User user=new User();
-//        user.setAge(31);
-//        user.setCity("Kiyv");
-//        user.setCountry("Ukraine");
-//        user.setDateRegistered(new Date());
-//        user.setFirstName("Vitaliy");
-//        user.setLastName("Shinkarenko");
-//        user.setPhone("0953203905");
-//        user.setRelationshipStatus("meried");
-//        user.setReligion("ortodox");
-//        user.setSchool("Bogdanivka");
-//        user.setUniversity("nuht");
-//        return userDao.save( user);
-//    }
 
 
 }
