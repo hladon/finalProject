@@ -18,13 +18,15 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    public String login(Map<String,String> map)throws Exception{
-        String phone=map.get("phone");
-        return "true";
+    public User login(String password,String phone){
+        User user=userDao.isExist(phone);
+        if (user.getPassword().equals(password))
+            return user;
+        return null ;
     }
 
     public ResponseEntity<String> registerUser (User user){
-        if (!checkUser(user))
+        if (!checkPhone(user.getPhone()))
             return new ResponseEntity<>("Wrong phone number!", HttpStatus.BAD_REQUEST);
         user.setDateRegistered(new Date());
         try {
@@ -39,8 +41,7 @@ public class UserService {
         }
     }
 
-    private boolean checkUser(User user){
-        String phone=user.getPhone();
+    private boolean checkPhone(String phone){
         if (phone==null||phone.length()<8)
             return false;
         try {

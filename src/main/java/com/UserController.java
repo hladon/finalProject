@@ -39,15 +39,20 @@ public class UserController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(HttpSession session, InputStream data){
-        ObjectMapper mapper=new ObjectMapper();
+    public ResponseEntity<String> login(Model model,HttpSession session,@RequestParam(name = "phone") String phone,
+                        @RequestParam(name = "password") String password){
+        User user=null;
         try {
-            Map<String,String> map=mapper.readValue(data,Map.class);
+            user=userService.login(password,phone);
+            session.setAttribute("user",user);
         }catch (Exception e){
-            return new ResponseEntity<String>("Wrong input!",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String> ("Internal error!",HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        if (user==null){
+            return new ResponseEntity<String> ("Wrong phone or password!",HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<String> ("User "+user.getFirstName()+" are log in !",HttpStatus.ACCEPTED);
 
-        return "login";
     }
 
     @RequestMapping(path = "/user/{userId}", method = RequestMethod.GET)

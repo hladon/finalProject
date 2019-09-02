@@ -31,7 +31,7 @@
             url:"user-registration",
             type:"POST",
             data:$('#registration-form').serialize(),
-            success: function success (){
+            success: function success (xhr){
                 alert('User was registered!');},
             error:function error (xhr){
                 alert(xhr.responseText);
