@@ -38,8 +38,13 @@ public class UserController {
         return "login";
     }
 
+    @RequestMapping(path = "/logout", method = RequestMethod.GET)
+    public void logout(HttpSession session){
+        session.setAttribute("user",null);
+    }
+
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(Model model,HttpSession session,@RequestParam(name = "phone") String phone,
+    public ResponseEntity<String> login(HttpSession session,@RequestParam(name = "phone") String phone,
                         @RequestParam(name = "password") String password){
         User user=null;
         try {
