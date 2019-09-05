@@ -5,22 +5,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.User;
 import com.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.support.HttpRequestHandlerServlet;
 import org.springframework.web.server.ResponseStatusException;
 
 
-
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.util.Map;
 
 
 @Controller
-public class UserController {
+public class UserController extends HttpServlet {
 
     @Autowired
     private UserDao userDao;
@@ -39,19 +43,22 @@ public class UserController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(Model model,HttpSession session,@RequestParam(name = "phone") String phone,
-                        @RequestParam(name = "password") String password){
+    public ResponseEntity<String> login(HttpServletRequest request, HttpSession session){
+        String pass=request.getParameter("password");
+        String ph=request.getParameter("phone");
+        System.out.println(pass);
         User user=null;
         try {
-            user=userService.login(password,phone);
+            user=userService.login(pass,ph);
             session.setAttribute("user",user);
         }catch (Exception e){
+
             return new ResponseEntity<String> ("Internal error!",HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (user==null){
             return new ResponseEntity<String> ("Wrong phone or password!",HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String> ("User "+user.getFirstName()+" are log in !",HttpStatus.ACCEPTED);
+        return new ResponseEntity<String> (HttpStatus.ACCEPTED);
 
     }
 
