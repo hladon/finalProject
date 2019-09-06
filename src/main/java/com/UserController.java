@@ -43,16 +43,18 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(HttpServletRequest request, HttpSession session){
-        String pass=request.getParameter("password");
-        String ph=request.getParameter("phone");
-        System.out.println(pass);
+    public ResponseEntity<String> login(InputStream input, HttpSession session){
+        ObjectMapper mapper=new ObjectMapper();
+        Map<String,String> data;
         User user=null;
         try {
+            data=mapper.readValue(input,Map.class);
+            String pass=data.get("password");
+            String ph=data.get("phone");
+            System.out.println(pass);
             user=userService.login(pass,ph);
             session.setAttribute("user",user);
         }catch (Exception e){
-
             return new ResponseEntity<String> ("Internal error!",HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (user==null){
