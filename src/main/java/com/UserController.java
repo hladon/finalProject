@@ -2,6 +2,7 @@ package com;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.models.Password;
 import com.models.User;
 import com.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.support.HttpRequestHandlerServlet;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 
 import javax.servlet.ServletRequest;
@@ -20,7 +23,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeMap;
 
 
 @Controller
@@ -43,18 +50,13 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(InputStream input, HttpSession session){
-        ObjectMapper mapper=new ObjectMapper();
-        Map<String,String> data;
+    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception{
         User user=null;
-        try {
-            data=mapper.readValue(input,Map.class);
-            String pass=data.get("password");
-            String ph=data.get("phone");
-            System.out.println(pass);
-            user=userService.login(pass,ph);
+        try{
+            user=userService.login(pass.getPassword(),pass.getPhone());
             session.setAttribute("user",user);
         }catch (Exception e){
+            System.out.println(e);
             return new ResponseEntity<String> ("Internal error!",HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (user==null){

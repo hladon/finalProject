@@ -17,8 +17,7 @@
         $.ajax({
             url:"login",
             type:"POST",
-            contentType: 'text/plain',
-            data:$('#login-form').serialize(),
+            data:$('#login-form').serializeArray(),
             success: function success (data){
                 alert('User are log in!');},
             error:function error (xhr){
