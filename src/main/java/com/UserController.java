@@ -1,33 +1,23 @@
 package com;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.models.Password;
+import com.models.Relationship;
 import com.models.User;
 import com.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.support.HttpRequestHandlerServlet;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriComponentsBuilder;
 
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.List;
 
 
 @Controller
@@ -67,11 +57,17 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/user/{userId}", method = RequestMethod.GET)
-    public String profile(Model model, @PathVariable long userId){
+    public String profile(HttpSession session,Model model, @PathVariable long userId){
+        User userClient=(User)session.getAttribute("user");
+        if(userClient==null)
+            return "login";
         User user=null;
+        Relationship rel=null;
         try {
             user=userDao.findById(userId);
+            rel=userService.getRelationship(userClient.getId(),userId);
             model.addAttribute("user",user);
+            model.addAttribute("relationship",rel);
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -87,5 +83,19 @@ public class UserController extends HttpServlet {
         return userService.registerUser(user);
     }
 
+    public ResponseEntity<String> addRelationship(String userIdFrom, String userIdTo){
+        return  userService.addRelationship(userIdFrom,userIdTo);
+    }
 
+    public ResponseEntity<String> updateRelationship(String userIdFrom, String userIdTo, String status){
+        return  userService.updateRelationship( userIdFrom,  userIdTo,  status);
+    }
+
+    public List<Relationship> getIncomeRequests(String userId){
+        return userService.getIncomeRequests(userId);
+    }
+
+    public List<Relationship> getOutcomeRequests(String userId){
+        return userService.getOutcomeRequests( userId);
+    }
 }

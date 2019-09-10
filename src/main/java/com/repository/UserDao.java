@@ -1,5 +1,6 @@
 package com.repository;
 
+import com.models.Relationship;
 import com.models.User;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,5 @@ public class UserDao extends DAO<User> {
         }
         return null;
     }
+
 }

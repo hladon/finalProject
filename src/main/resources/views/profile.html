@@ -16,7 +16,10 @@
     <div class="right">
         <p th:text="${user.firstName}"></p>
         <p th:text="${user.city}"></p>
-
+        <p th:text="&{relationship.relates}"></p>
+    </div>
+    <div class="right" id="relationship-status">
+        <p th:text="&{relationship.relates}"></p>
     </div>
 </div>
 

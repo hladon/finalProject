@@ -16,10 +16,15 @@ public class Relationship {
     public long getIdUserTo() {
         return idUserTo;
     }
-
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     public Attitude getRelates() {
         return relates;
+    }
+
+    public Relationship(long idUserFrom, long idUserTo, Attitude relates) {
+        this.idUserFrom = idUserFrom;
+        this.idUserTo = idUserTo;
+        this.relates = relates;
     }
 
     public void setIdUserFrom(long idUserFrom) {
