@@ -1,6 +1,5 @@
 package com;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.models.Attitude;
 import com.models.Relationship;
 import com.models.User;
@@ -11,10 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -51,9 +48,11 @@ public class UserService {
     public  Relationship getRelationship(long idFrom, long idTo){
         Relationship relate = relationshipDAO.getRelationship(idFrom,idTo);
         if (relate==null){
-            relate=new Relationship(idFrom,idTo, Attitude.NOTFRIEND);
+            relate=new Relationship();
+            relate.setRelates(Attitude.NOTFRIEND);
+            relate.setIdUserFrom(idFrom);
+            relate.setIdUserTo(idTo);
             relationshipDAO.save(relate);
-            return relate;
         }
         return relate;
     }
@@ -89,14 +88,12 @@ public class UserService {
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
-    public List<Relationship> getIncomeRequests(String userId){
-        long userIdLong=Long.parseLong(userId);
-        return relationshipDAO.getIncomeRequests(userIdLong);
+    public List<Relationship> getIncomeRequests(long userId){
+        return relationshipDAO.getIncomeRequests(userId);
     }
 
-    public List<Relationship> getOutcomeRequests(String userId){
-        long userIdLong=Long.parseLong(userId);
-        return relationshipDAO.getOutcomeRequests(userIdLong);
+    public List<Relationship> getOutcomeRequests(long userId){
+        return relationshipDAO.getOutcomeRequests(userId);
     }
 
     private boolean checkPhone(String phone){

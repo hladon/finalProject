@@ -5,5 +5,5 @@ public enum Attitude {
     NOTFRIEND,
     FORMERFRIEND,
     NOTACCEPTED,
-    NOTCOMFERD
+    NOTCOMFIRMED
 }

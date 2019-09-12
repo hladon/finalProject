@@ -16,10 +16,26 @@
     <div class="right">
         <p th:text="${user.firstName}"></p>
         <p th:text="${user.city}"></p>
-        <p th:text="&{relationship.relates}"></p>
     </div>
     <div class="right" id="relationship-status">
-        <p th:text="&{relationship.relates}"></p>
+        <p th:text="${relationship?.relates}"></p>
+    </div>
+    <div>
+        <h3 th:text="${tableName}"></h3>
+        <table>
+            <thead>
+            <tr>
+                <th> ID User </th>
+                <th> Request </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${requests}">
+                <td><span th:text="${request.idUserFrom}"> ID User </span></td>
+                <td><span th:text="${request.relates}"> Request </span></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -30,6 +46,7 @@
         width: 200px;
         height: 300px;
         border-style: solid;
+        border-width: 1px;
     }
     .right{
         margin-left: 380px;

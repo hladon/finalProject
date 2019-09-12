@@ -63,11 +63,28 @@ public class UserController extends HttpServlet {
             return "login";
         User user=null;
         Relationship rel=null;
+        long id=userClient.getId();
         try {
             user=userDao.findById(userId);
-            rel=userService.getRelationship(userClient.getId(),userId);
             model.addAttribute("user",user);
-            model.addAttribute("relationship",rel);
+            String tableName="Income requests";
+            List<Relationship> requests=null;
+            if(id!=userId) {
+                rel = userService.getRelationship(id, userId);
+                model.addAttribute("relationship", rel);
+                model.addAttribute("tableName","Income requests");
+                requests=userService.getOutcomeRequests(userId);
+                tableName="Outcome requests";
+            }
+            if(requests==null)
+                requests=userService.getOutcomeRequests(userId);
+            model.addAttribute("requests",requests);
+            model.addAttribute("tableName",tableName);
+
+            for(Relationship reli: requests){
+                System.out.println(reli);
+            }
+
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -76,6 +93,7 @@ public class UserController extends HttpServlet {
         }
         return "profile";
     }
+
 
 
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
@@ -92,10 +110,12 @@ public class UserController extends HttpServlet {
     }
 
     public List<Relationship> getIncomeRequests(String userId){
-        return userService.getIncomeRequests(userId);
+        long userIdLong=Long.parseLong(userId);
+        return userService.getIncomeRequests(userIdLong);
     }
 
     public List<Relationship> getOutcomeRequests(String userId){
-        return userService.getOutcomeRequests( userId);
+        long userIdLong=Long.parseLong(userId);
+        return userService.getOutcomeRequests( userIdLong);
     }
 }

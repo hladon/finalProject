@@ -1,5 +1,6 @@
 package com.repository;
 
+import com.models.Attitude;
 import com.models.Relationship;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ public class RelationshipDAO extends DAO<Relationship> {
 
     public Relationship getRelationship(long idFrom,long idTo){
         List<Relationship> rel =entityManager.createNativeQuery("" +
-                "SELECT * FROM RELATIONSHIP WHERE REL_USER_FROM=?1 AND REL_USER_TO=?2",Relationship.class)
+                "SELECT * FROM RELATIONSHIP WHERE ID_USER_FROM=?1 AND ID_USER_TO=?2",Relationship.class)
                 .setParameter(1,idFrom)
                 .setParameter(2,idTo)
                 .getResultList();
@@ -24,15 +25,17 @@ public class RelationshipDAO extends DAO<Relationship> {
 
     public List<Relationship> getIncomeRequests(long userId){
         return entityManager.createNativeQuery("" +
-                "SELECT * FROM RELATIONSHIP WHERE  REL_USER_TO=?1",Relationship.class)
+                "SELECT * FROM RELATIONSHIP WHERE  ID_USER_TO=?1 AND RELATES=?2",Relationship.class)
                 .setParameter(1,userId)
+                .setParameter(2, Attitude.NOTACCEPTED.name())
                 .getResultList();
     }
 
     public List<Relationship> getOutcomeRequests(long userId){
         return entityManager.createNativeQuery("" +
-                "SELECT * FROM RELATIONSHIP WHERE  REL_USER_FROM=?1",Relationship.class)
+                "SELECT * FROM RELATIONSHIP WHERE  ID_USER_FROM=?1 AND RELATES=?2",Relationship.class)
                 .setParameter(1,userId)
+                .setParameter(2, Attitude.NOTCOMFIRMED.name())
                 .getResultList();
     }
 }
