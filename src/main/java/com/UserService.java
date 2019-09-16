@@ -5,6 +5,7 @@ import com.models.Relationship;
 import com.models.User;
 import com.repository.RelationshipDAO;
 import com.repository.UserDao;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +53,8 @@ public class UserService {
             long userFrom=Long.parseLong(userIdFrom);
             long userTo=Long.parseLong(userIdTo);
             getRelationship(userFrom,userTo);
+        }catch (ConstraintViolationException cve){
+            return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
         }catch (NumberFormatException ne){
             return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
         }catch (Exception e){
@@ -74,7 +77,10 @@ public class UserService {
             }
         }catch (NumberFormatException ne){
             return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
-        }catch (IllegalArgumentException iae){
+        }catch (ConstraintViolationException cve){
+            return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
+        }
+        catch (IllegalArgumentException iae){
             return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);

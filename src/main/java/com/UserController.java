@@ -116,4 +116,9 @@ public class UserController extends HttpServlet {
         long userIdLong = Long.parseLong(userId);
         return userService.getOutcomeRequests(userIdLong);
     }
+
+    @RequestMapping(path = "/test", method = RequestMethod.GET)
+    public String test() {
+        return userService.getRelationship(1,2).toString();
+    }
 }
