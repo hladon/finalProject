@@ -1,7 +1,6 @@
 package com;
 
 
-
 import com.models.Password;
 import com.models.Relationship;
 import com.models.User;
@@ -30,92 +29,91 @@ public class UserController extends HttpServlet {
     private UserService userService;
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public String main(){
+    public String main() {
         return "index";
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
-    public String loginPage(){
+    public String loginPage() {
         return "login";
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception{
-        User user=null;
-        try{
-            user=userService.login(pass.getPassword(),pass.getPhone());
-            session.setAttribute("user",user);
-        }catch (Exception e){
+    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception {
+        User user = null;
+        try {
+            user = userService.login(pass.getPassword(), pass.getPhone());
+            session.setAttribute("user", user);
+        } catch (Exception e) {
             System.out.println(e);
-            return new ResponseEntity<String> ("Internal error!",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>("Internal error!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (user==null){
-            return new ResponseEntity<String> ("Wrong phone or password!",HttpStatus.BAD_REQUEST);
+        if (user == null) {
+            return new ResponseEntity<String>("Wrong phone or password!", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String> (HttpStatus.ACCEPTED);
-
+        return new ResponseEntity<String>(HttpStatus.ACCEPTED);
     }
 
     @RequestMapping(path = "/user/{userId}", method = RequestMethod.GET)
-    public String profile(HttpSession session,Model model, @PathVariable long userId){
-        User userClient=(User)session.getAttribute("user");
-        if(userClient==null)
+    public String profile(HttpSession session, Model model, @PathVariable long userId) {
+        User userClient = (User) session.getAttribute("user");
+        if (userClient == null)
             return "login";
-        User user=null;
-        Relationship rel=null;
-        long id=userClient.getId();
+        User user = null;
+        Relationship rel = null;
+        long id = userClient.getId();
         try {
-            user=userDao.findById(userId);
-            model.addAttribute("user",user);
-            String tableName="Income requests";
-            List<Relationship> requests=null;
-            if(id!=userId) {
+            user = userDao.findById(userId);
+            model.addAttribute("user", user);
+
+            if (id != userId) {
                 rel = userService.getRelationship(id, userId);
                 model.addAttribute("relationship", rel);
-                model.addAttribute("tableName","Income requests");
-                requests=userService.getOutcomeRequests(userId);
-                tableName="Outcome requests";
-            }
-            if(requests==null)
-                requests=userService.getOutcomeRequests(userId);
-            model.addAttribute("requests",requests);
-            model.addAttribute("tableName",tableName);
-
-            for(Relationship reli: requests){
-                System.out.println(reli);
+            }else {
+                List<Relationship> outRequests = userService.getIncomeRequests(userId);
+                List<Relationship> inRequests = userService.getOutcomeRequests(userId);
+                model.addAttribute("outRequests", outRequests);
+                model.addAttribute("inRequests", inRequests);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (user==null){
+        if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return "profile";
     }
 
-
-
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
-    public ResponseEntity<String> registerUser(@ModelAttribute User user){
+    public ResponseEntity<String> registerUser(@ModelAttribute User user) {
         return userService.registerUser(user);
     }
 
-    public ResponseEntity<String> addRelationship(String userIdFrom, String userIdTo){
-        return  userService.addRelationship(userIdFrom,userIdTo);
+    @RequestMapping(path = "/addRelationship", method = RequestMethod.GET)
+    public ResponseEntity<String> addRelationship(HttpSession session, String userIdFrom, String userIdTo) {
+        User userClient = (User) session.getAttribute("user");
+        if (userClient == null)
+            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        return userService.addRelationship(userIdFrom, userIdTo);
     }
 
-    public ResponseEntity<String> updateRelationship(String userIdFrom, String userIdTo, String status){
-        return  userService.updateRelationship( userIdFrom,  userIdTo,  status);
+    @RequestMapping(path = "/updateRelationship", method = RequestMethod.GET)
+    public ResponseEntity<String> updateRelationship(HttpSession session,  String userIdTo, String status) {
+        User userClient = (User) session.getAttribute("user");
+        if (userClient == null)
+            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        long userIdFrom=userClient.getId();
+        return userService.updateRelationship(userIdFrom, userIdTo, status);
     }
 
-    public List<Relationship> getIncomeRequests(String userId){
-        long userIdLong=Long.parseLong(userId);
+    public List<Relationship> getIncomeRequests(String userId) {
+        long userIdLong = Long.parseLong(userId);
         return userService.getIncomeRequests(userIdLong);
     }
 
-    public List<Relationship> getOutcomeRequests(String userId){
-        long userIdLong=Long.parseLong(userId);
-        return userService.getOutcomeRequests( userIdLong);
+    public List<Relationship> getOutcomeRequests(String userId) {
+        long userIdLong = Long.parseLong(userId);
+        return userService.getOutcomeRequests(userIdLong);
     }
 }

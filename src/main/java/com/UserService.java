@@ -1,6 +1,6 @@
 package com;
 
-import com.models.Attitude;
+import com.models.FriendshipStatus;
 import com.models.Relationship;
 import com.models.User;
 import com.repository.RelationshipDAO;
@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -45,17 +46,6 @@ public class UserService {
         }
     }
 
-    public  Relationship getRelationship(long idFrom, long idTo){
-        Relationship relate = relationshipDAO.getRelationship(idFrom,idTo);
-        if (relate==null){
-            relate=new Relationship();
-            relate.setRelates(Attitude.NOTFRIEND);
-            relate.setIdUserFrom(idFrom);
-            relate.setIdUserTo(idTo);
-            relationshipDAO.save(relate);
-        }
-        return relate;
-    }
 
     public ResponseEntity<String> addRelationship(String userIdFrom, String userIdTo){
         try {
@@ -70,14 +60,18 @@ public class UserService {
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> updateRelationship(String userIdFrom, String userIdTo, String status){
+    public ResponseEntity<String> updateRelationship(long userIdFrom, String userIdTo, String status){
         try {
-            long userFrom=Long.parseLong(userIdFrom);
             long userTo=Long.parseLong(userIdTo);
-            Attitude attitude=Attitude.valueOf(status);
-            Relationship relationship =getRelationship(userFrom,userTo);
-            relationship.setRelates(attitude);
+            FriendshipStatus friendshipStatus = FriendshipStatus.valueOf(status);
+            Relationship relationship =getRelationship(userIdFrom,userTo);
+            relationship.setRelates(friendshipStatus);
             relationshipDAO.update(relationship);
+            if (friendshipStatus==FriendshipStatus.FORMERFRIEND||friendshipStatus==FriendshipStatus.FRIEND){
+                Relationship relationship2 =getRelationship(userTo,userIdFrom);
+                relationship2.setRelates(friendshipStatus);
+                relationshipDAO.update(relationship2);
+            }
         }catch (NumberFormatException ne){
             return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
         }catch (IllegalArgumentException iae){
@@ -94,6 +88,18 @@ public class UserService {
 
     public List<Relationship> getOutcomeRequests(long userId){
         return relationshipDAO.getOutcomeRequests(userId);
+    }
+
+
+    public  Relationship getRelationship(long idFrom, long idTo){
+        Relationship relate = relationshipDAO.getRelationship(idFrom,idTo);
+        if (relate==null){
+            relate=new Relationship();
+            relate.setIdUserFrom(idFrom);
+            relate.setIdUserTo(idTo);
+            relationshipDAO.save(relate);
+        }
+        return relate;
     }
 
     private boolean checkPhone(String phone){

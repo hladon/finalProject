@@ -1,6 +1,6 @@
 package com.repository;
 
-import com.models.Attitude;
+import com.models.FriendshipStatus;
 import com.models.Relationship;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +27,7 @@ public class RelationshipDAO extends DAO<Relationship> {
         return entityManager.createNativeQuery("" +
                 "SELECT * FROM RELATIONSHIP WHERE  ID_USER_TO=?1 AND RELATES=?2",Relationship.class)
                 .setParameter(1,userId)
-                .setParameter(2, Attitude.NOTACCEPTED.name())
+                .setParameter(2, FriendshipStatus.REQUESTSEND.name())
                 .getResultList();
     }
 
@@ -35,7 +35,7 @@ public class RelationshipDAO extends DAO<Relationship> {
         return entityManager.createNativeQuery("" +
                 "SELECT * FROM RELATIONSHIP WHERE  ID_USER_FROM=?1 AND RELATES=?2",Relationship.class)
                 .setParameter(1,userId)
-                .setParameter(2, Attitude.NOTCOMFIRMED.name())
+                .setParameter(2, FriendshipStatus.REQUESTSEND.name())
                 .getResultList();
     }
 }

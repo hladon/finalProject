@@ -9,7 +9,7 @@
     <div class="left">
         <h1>Photo</h1>
         <div>
-            <button class="btn">Send message</button>
+            <button class="status" value="REQUESTSEND">Send message</button>
         </div>
     </div>
 
@@ -21,7 +21,10 @@
         <p th:text="${relationship?.relates}"></p>
     </div>
     <div>
-        <h3 th:text="${tableName}"></h3>
+        <button id="addFriend" >addFriend</button>
+    </div>
+    <div>
+        <h3> Income request</h3>
         <table>
             <thead>
             <tr>
@@ -30,9 +33,29 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="request : ${requests}">
+            <tr th:each="request : ${inRequests}">
                 <td><span th:text="${request.idUserFrom}"> ID User </span></td>
                 <td><span th:text="${request.relates}"> Request </span></td>
+                <td><button class="status" value="FRIEND" >accept</button></td>
+                <td><button class="status" value="" >decline</button></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h3> Outcome request</h3>
+        <table>
+            <thead>
+            <tr>
+                <th> ID User </th>
+                <th> Request </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${outRequests}">
+                <td><span th:text="${request.idUserFrom}"> ID User </span></td>
+                <td><span th:text="${request.relates}"> Request </span></td>
+
             </tr>
             </tbody>
         </table>
@@ -55,4 +78,25 @@
         margin-top: 220px;
     }
 </style>
+<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script language="JavaScript" type="text/javascript">
+    $("button.status").onclick(function(){
+        event.preventDefault();
+            var formData = {
+                'status': this.value
+            }
+
+        $.ajax({
+            url:"updateRelationship",
+            type:"GET",
+            data:formData,
+            success: function success (){
+                alert('Request send!');},
+            error:function error (xhr){
+                alert(xhr.responseText);
+            }
+        });
+    });
+
+</script>
 </html>

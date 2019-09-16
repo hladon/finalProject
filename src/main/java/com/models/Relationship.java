@@ -8,7 +8,7 @@ public class Relationship {
     private long id;
     private long idUserFrom;
     private long idUserTo;
-    private  Attitude relates;
+    private FriendshipStatus relates;
     @Id
     @SequenceGenerator(name = "RELATE_SK", sequenceName = "RELATE_SK", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RELATE_SK")
@@ -24,7 +24,7 @@ public class Relationship {
         return idUserTo;
     }
     @Enumerated(EnumType.STRING)
-    public Attitude getRelates() {
+    public FriendshipStatus getRelates() {
         return relates;
     }
 
@@ -41,7 +41,7 @@ public class Relationship {
         this.idUserTo = idUserTo;
     }
 
-    public void setRelates(Attitude relates) {
+    public void setRelates(FriendshipStatus relates) {
         this.relates = relates;
     }
 
