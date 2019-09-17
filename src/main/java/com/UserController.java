@@ -74,6 +74,7 @@ public class UserController extends HttpServlet {
                 List<Relationship> inRequests = userService.getOutcomeRequests(userId);
                 model.addAttribute("outRequests", outRequests);
                 model.addAttribute("inRequests", inRequests);
+                return "personalProfile";
             }
 
         } catch (Exception e) {
@@ -99,7 +100,7 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/updateRelationship", method = RequestMethod.GET)
-    public ResponseEntity<String> updateRelationship(HttpSession session,  String userIdTo, String status) {
+    public ResponseEntity<String> updateRelationship(HttpSession session, @RequestParam String userIdTo, @RequestParam String status) {
         User userClient = (User) session.getAttribute("user");
         if (userClient == null)
             new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
