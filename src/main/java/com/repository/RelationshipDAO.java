@@ -13,7 +13,8 @@ public class RelationshipDAO extends DAO<Relationship> {
 
     public Relationship getRelationship(long idFrom,long idTo){
         List<Relationship> rel =entityManager.createNativeQuery("" +
-                "SELECT * FROM RELATIONSHIP WHERE ID_USER_FROM=?1 AND ID_USER_TO=?2",Relationship.class)
+                "SELECT * FROM RELATIONSHIP WHERE ?1 IN(ID_USER_FROM,ID_USER_TO) AND ?2 IN(ID_USER_FROM,ID_USER_TO)",
+                Relationship.class)
                 .setParameter(1,idFrom)
                 .setParameter(2,idTo)
                 .getResultList();

@@ -48,11 +48,11 @@ public class UserService {
     }
 
 
-    public ResponseEntity<String> addRelationship(String userIdFrom, String userIdTo) {
+    public ResponseEntity<String> addRelationship(long userIdFrom, long userIdTo) {
         try {
-            long userFrom = Long.parseLong(userIdFrom);
-            long userTo = Long.parseLong(userIdTo);
-            getRelationship(userFrom, userTo);
+            Relationship relationship=getRelationship(userIdFrom, userIdTo);
+            relationship.setRelates(FriendshipStatus.REQUESTSEND);
+            relationshipDAO.save(relationship);
         } catch (ConstraintViolationException | NumberFormatException cve) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -61,18 +61,12 @@ public class UserService {
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> updateRelationship(long userIdFrom, String userIdTo, String status) {
+    public ResponseEntity<String> updateRelationship(long userIdFrom,long userIdTo, String status) {
         try {
-            long userTo = Long.parseLong(userIdTo);
             FriendshipStatus friendshipStatus = FriendshipStatus.valueOf(status);
-            Relationship relationship = getRelationship(userIdFrom, userTo);
+            Relationship relationship = getRelationship(userIdFrom, userIdTo);
             relationship.setRelates(friendshipStatus);
             relationshipDAO.update(relationship);
-            if (friendshipStatus == FriendshipStatus.FORMERFRIEND || friendshipStatus == FriendshipStatus.FRIEND) {
-                Relationship relationship2 = getRelationship(userTo, userIdFrom);
-                relationship2.setRelates(friendshipStatus);
-                relationshipDAO.update(relationship2);
-            }
         } catch (ConstraintViolationException | IllegalArgumentException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -96,7 +90,6 @@ public class UserService {
             relate = new Relationship();
             relate.setIdUserFrom(idFrom);
             relate.setIdUserTo(idTo);
-            relationshipDAO.save(relate);
         }
         return relate;
     }

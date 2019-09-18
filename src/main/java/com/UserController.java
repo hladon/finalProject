@@ -69,6 +69,7 @@ public class UserController extends HttpServlet {
             if (id != userId) {
                 rel = userService.getRelationship(id, userId);
                 model.addAttribute("relationship", rel);
+                session.setAttribute("lastVisited",userId);
             }else {
                 List<Relationship> outRequests = userService.getIncomeRequests(userId);
                 List<Relationship> inRequests = userService.getOutcomeRequests(userId);
@@ -92,18 +93,21 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/addRelationship", method = RequestMethod.GET)
-    public ResponseEntity<String> addRelationship(HttpSession session, String userIdFrom, String userIdTo) {
+    public ResponseEntity<String> addRelationship(HttpSession session) {
         User userClient = (User) session.getAttribute("user");
         if (userClient == null)
             new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        long userIdTo=(Long) session.getAttribute("lastVisited");
+        long userIdFrom=userClient.getId();
         return userService.addRelationship(userIdFrom, userIdTo);
     }
 
     @RequestMapping(path = "/updateRelationship", method = RequestMethod.GET)
-    public ResponseEntity<String> updateRelationship(HttpSession session, @RequestParam String userIdTo, @RequestParam String status) {
+    public ResponseEntity<String> updateRelationship(HttpSession session,  @RequestParam String status) {
         User userClient = (User) session.getAttribute("user");
         if (userClient == null)
             new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        long userIdTo=(Long) session.getAttribute("lastVisited");
         long userIdFrom=userClient.getId();
         return userService.updateRelationship(userIdFrom, userIdTo, status);
     }
