@@ -43,16 +43,12 @@
 </style>
 <script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
 <script language="JavaScript" type="text/javascript">
-    $("button.status").onclick(function(){
+    $("button.status").click(function(){
         event.preventDefault();
-            var formData = {
-                'status': this.value
-            }
 
         $.ajax({
             url:"addRelationship",
             type:"GET",
-            data:formData,
             success: function success (){
                 alert('Request send!');},
             error:function error (xhr){
