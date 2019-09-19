@@ -103,11 +103,10 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/updateRelationship", method = RequestMethod.GET)
-    public ResponseEntity<String> updateRelationship(HttpSession session,  @RequestParam String status) {
+    public ResponseEntity<String> updateRelationship(HttpSession session,@RequestParam String userIdTo,  @RequestParam String status) {
         User userClient = (User) session.getAttribute("user");
         if (userClient == null)
             new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-        long userIdTo=(Long) session.getAttribute("lastVisited");
         long userIdFrom=userClient.getId();
         return userService.updateRelationship(userIdFrom, userIdTo, status);
     }

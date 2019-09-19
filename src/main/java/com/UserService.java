@@ -50,8 +50,12 @@ public class UserService {
     public ResponseEntity<String> addRelationship(long userIdFrom, long userIdTo) {
         try {
             Relationship relationship=getRelationship(userIdFrom, userIdTo);
-            relationship.setRelates(FriendshipStatus.REQUESTSEND);
-            relationshipDAO.save(relationship);
+            if(!relationship.getRelates().equals(FriendshipStatus.FRIEND)){
+                relationship.setRelates(FriendshipStatus.REQUESTSEND);
+                relationshipDAO.save(relationship);
+            }else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         } catch (ConstraintViolationException | NumberFormatException cve) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -60,10 +64,11 @@ public class UserService {
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> updateRelationship(long userIdFrom,long userIdTo, String status) {
+    public ResponseEntity<String> updateRelationship(long userIdFrom,String userIdTo, String status) {
         try {
+            long userTo=Long.parseLong(userIdTo);
             FriendshipStatus friendshipStatus = FriendshipStatus.valueOf(status);
-            Relationship relationship = getRelationship(userIdFrom, userIdTo);
+            Relationship relationship = getRelationship(userIdFrom, userTo);
             relationship.setRelates(friendshipStatus);
             relationshipDAO.update(relationship);
         } catch (ConstraintViolationException | IllegalArgumentException ex) {
@@ -87,9 +92,9 @@ public class UserService {
         Relationship relate = relationshipDAO.getRelationship(idFrom, idTo);
         if (relate == null) {
             relate = new Relationship();
-            relate.setIdUserFrom(idFrom);
-            relate.setIdUserTo(idTo);
         }
+        relate.setIdUserFrom(idFrom);
+        relate.setIdUserTo(idTo);
         return relate;
     }
 
