@@ -71,8 +71,8 @@ public class UserController extends HttpServlet {
                 model.addAttribute("relationship", rel);
                 session.setAttribute("lastVisited",userId);
             }else {
-                List<Relationship> outRequests = userService.getIncomeRequests(userId);
-                List<Relationship> inRequests = userService.getOutcomeRequests(userId);
+                List<Relationship> outRequests = userService.getOutcomeRequests(userId);
+                List<Relationship> inRequests = userService.getIncomeRequests(userId);
                 model.addAttribute("outRequests", outRequests);
                 model.addAttribute("inRequests", inRequests);
                 return "personalProfile";
