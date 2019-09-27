@@ -1,6 +1,7 @@
 package com.models;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "RELATIONSHIP")
@@ -8,6 +9,7 @@ public class Relationship {
     private long id;
     private long idUserFrom;
     private long idUserTo;
+    private Date lastChanges;
     private FriendshipStatus relates;
     @Id
     @SequenceGenerator(name = "RELATE_SK", sequenceName = "RELATE_SK", allocationSize = 1)
@@ -27,7 +29,10 @@ public class Relationship {
     public FriendshipStatus getRelates() {
         return relates;
     }
-
+    @Column(name = "LAST_CHANGES")
+    public Date getLastChanges() {
+        return lastChanges;
+    }
 
     public void setId(long id) {
         this.id = id;
@@ -45,12 +50,17 @@ public class Relationship {
         this.relates = relates;
     }
 
+    public void setLastChanges(Date lastChanges) {
+        this.lastChanges = lastChanges;
+    }
+
     @Override
     public String toString() {
         return "Relationship{" +
                 "id=" + id +
                 ", idUserFrom=" + idUserFrom +
                 ", idUserTo=" + idUserTo +
+                ", lastChanges=" + lastChanges +
                 ", relates=" + relates +
                 '}';
     }
