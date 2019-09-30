@@ -4,6 +4,7 @@ import com.models.FriendshipStatus;
 import com.models.Relationship;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -38,5 +39,17 @@ public class RelationshipDAO extends DAO<Relationship> {
                 .setParameter(1,userId)
                 .setParameter(2, FriendshipStatus.REQUESTSEND.name())
                 .getResultList();
+    }
+
+    public Relationship save(Relationship relationship){
+        relationship.setLastChanges(new Date());
+        entityManager.persist(relationship);
+        return relationship;
+    }
+
+    public Relationship update(Relationship relationship){
+        relationship.setLastChanges(new Date());
+        entityManager.merge( relationship);
+        return relationship;
     }
 }

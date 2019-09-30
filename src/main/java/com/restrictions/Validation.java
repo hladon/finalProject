@@ -2,7 +2,7 @@ package com.restrictions;
 
 import com.models.User;
 
-abstract class Validation {
+public abstract class Validation {
     private Validation next;
 
     public Validation linkWith(Validation next){

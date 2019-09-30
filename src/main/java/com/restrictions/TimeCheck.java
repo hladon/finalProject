@@ -6,6 +6,8 @@ import com.repository.RelationshipDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 public class TimeCheck extends Validation {
     @Autowired
@@ -20,7 +22,8 @@ public class TimeCheck extends Validation {
     @Override
     public boolean check(User user) {
         Relationship rel =dao.getRelationship(user.getId(),userTo.getId());
-        if ()
+        if (rel.getLastChanges().getTime()-new Date().getTime()<86400000*3)
+            return false;
         return checkNext(user);
     }
 

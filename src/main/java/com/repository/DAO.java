@@ -29,8 +29,8 @@ public class DAO<T> {
         return "Delete  done!";
     }
 
-    public String update(T item) {
+    public T update(T item) {
         entityManager.merge(item);
-        return "Update  done";
+        return item;
     }
 }
