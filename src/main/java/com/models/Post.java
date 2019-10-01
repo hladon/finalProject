@@ -2,6 +2,7 @@ package com.models;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "POST")
@@ -9,7 +10,10 @@ public class Post {
     private Long id;
     private String message;
     private Date datePosted;
+    private String location;
+    private List<User> usersTagged;
     private User userPosted;
+    private User userPagePosted;
     //TODO
     //levels permissions
 
