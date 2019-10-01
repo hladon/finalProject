@@ -39,6 +39,23 @@ public class Post {
     public User getUserPosted() {
         return userPosted;
     }
+    @Column(name = "LOCATION")
+    public String getLocation() {
+        return location;
+    }
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "USERS_TAGGED",
+            joinColumns =@JoinColumn(name = "POST_ID"),
+            inverseJoinColumns =@JoinColumn(name = "TAGGED_ID")
+    )
+    public List<User> getUsersTagged() {
+        return usersTagged;
+    }
+    @Column(name = "USER_PAGE_POSTED")
+    public User getUserPagePosted() {
+        return userPagePosted;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -54,5 +71,17 @@ public class Post {
 
     public void setUserPosted(User userPosted) {
         this.userPosted = userPosted;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setUsersTagged(List<User> usersTagged) {
+        this.usersTagged = usersTagged;
+    }
+
+    public void setUserPagePosted(User userPagePosted) {
+        this.userPagePosted = userPagePosted;
     }
 }
