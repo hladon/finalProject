@@ -4,16 +4,16 @@ import com.models.Relationship;
 import com.models.User;
 import com.repository.RelationshipDAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
 
 import java.util.Date;
 
-@Component
+
 public class TimeCheck extends Validation {
     @Autowired
     private RelationshipDAO dao;
 
-    private User userTo;
+    private User userTo=null;
 
     public TimeCheck(User userTo) {
         this.userTo = userTo;

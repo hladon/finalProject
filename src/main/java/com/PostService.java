@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
 public class PostService {
 
     public ResponseEntity<String> addPost (String post, String url, User userClient){
-        long pageId=Long.parseLong(url.substring(1));
+//        long pageId=Long.parseLong(url.substring(1));
+        System.out.println(url);
         if(checkLinks(post))
             return new ResponseEntity<>("Links not allowed here!",HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

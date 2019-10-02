@@ -52,7 +52,8 @@ public class Post {
     public List<User> getUsersTagged() {
         return usersTagged;
     }
-    @Column(name = "USER_PAGE_POSTED")
+    @ManyToOne
+    @JoinColumn(name = "USER_PAGE_POSTED")
     public User getUserPagePosted() {
         return userPagePosted;
     }

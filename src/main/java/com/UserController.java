@@ -114,11 +114,11 @@ public class UserController extends HttpServlet {
         return userService.updateRelationship(userIdFrom, userIdTo, status);
     }
     @RequestMapping(path = "/addPost", method = RequestMethod.POST)
-    public ResponseEntity<String> addPost (HttpSession session,@RequestParam String post,@RequestParam String url){
+    public ResponseEntity<String> addPost (HttpSession session,@RequestParam String message,@RequestParam String url){
         User userClient = (User) session.getAttribute("user");
-        if (userClient == null)
-            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-        return postService.addPost(post,url,userClient);
+//        if (userClient == null)
+//            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        return postService.addPost(message,url,userClient);
 
     }
     public List<Relationship> getIncomeRequests(String userId) {
