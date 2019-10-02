@@ -20,13 +20,11 @@
     <div class="right" id="relationship-status">
         <p th:text="${relationship?.relates}"></p>
     </div>
-    <div>
-        <button class="status" value="REQUESTSEND" >addFriend</button>
-    </div>
 </div>
 <div>
     <h2>Make a post</h2>
     <form id="post-form">
+        <input type="hidden" id="hiddenUrl" name="url" data-name="url" value="">
          <textarea rows="5" cols="40" name="post"></textarea>
         <p>  <input type="submit" value="registration"></p>
     </form>
@@ -49,14 +47,15 @@
 </style>
 <script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
 <script language="JavaScript" type="text/javascript">
-    $("button.status").click(function(){
+    document.getElementById('hiddenUrl').value = location.pathname;
+    $("#post-form").submit(function(){
         event.preventDefault();
-
         $.ajax({
-            url:"http://localhost:8081/addRelationship",
-            type:"GET",
+            url:"addPost",
+            type:"POST",
+            data:$('#login-form').serialize(),
             success: function success (){
-                alert('Request send!');},
+                alert('You add a post!');},
             error:function error (xhr){
                 alert(xhr.responseText);
             }

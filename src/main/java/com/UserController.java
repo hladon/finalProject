@@ -28,6 +28,9 @@ public class UserController extends HttpServlet {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PostService postService;
+
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String main() {
         return "index";
@@ -110,7 +113,14 @@ public class UserController extends HttpServlet {
         long userIdFrom=userClient.getId();
         return userService.updateRelationship(userIdFrom, userIdTo, status);
     }
+    @RequestMapping(path = "/addPost", method = RequestMethod.POST)
+    public ResponseEntity<String> addPost (HttpSession session,@RequestParam String post,@RequestParam String url){
+        User userClient = (User) session.getAttribute("user");
+        if (userClient == null)
+            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        return postService.addPost(post,url,userClient);
 
+    }
     public List<Relationship> getIncomeRequests(String userId) {
         long userIdLong = Long.parseLong(userId);
         return userService.getIncomeRequests(userIdLong);
