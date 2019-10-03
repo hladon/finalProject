@@ -60,7 +60,7 @@
     <h2>Make a post</h2>
     <form id="post-form">
         <input type="hidden" id="hiddenUrl" name="url" data-name="url" value="">
-        <textarea rows="5" cols="40" name="message"></textarea>
+        <textarea rows="5" cols="40" name="message" required></textarea>
         <p>  <input type="submit" value="post"></p>
     </form>
 </div>
@@ -88,7 +88,7 @@
         $.ajax({
             url:"http://localhost:8081/addPost",
             type:"POST",
-            data:$('#login-form').serialize(),
+            data:$('#post-form').serialize(),
             success: function success (){
                 alert('You add a post!');},
             error:function error (xhr){

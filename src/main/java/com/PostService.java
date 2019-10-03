@@ -1,6 +1,8 @@
 package com;
 
+import com.models.FriendshipStatus;
 import com.models.Post;
+import com.models.Relationship;
 import com.models.User;
 import com.repository.PostDao;
 import com.repository.UserDao;
@@ -19,20 +21,27 @@ public class PostService {
 
     @Autowired
     private PostDao postDao;
-
+    @Autowired
+    private UserService userService;
+    @Autowired
     private UserDao userDao;
 
     public ResponseEntity<String> addPost (String message, String url, User userClient){
         try {
-//        long pageId=Long.parseLong(url.substring(1));
-            System.out.println(url);
+            url = url.replaceAll("\\D+","");
+            long pageId=Long.parseLong(url);
             if(checkLinks(message))
                 return new ResponseEntity<>("Links not allowed here!",HttpStatus.BAD_REQUEST);
-//            User userPage=userDao.findById(pageId);
-//            Post post=new Post();
-//            post.setDatePosted(new Date());
-//            post.setMessage(message);
-//            postDao.save(post);
+            Relationship rel=userService.getRelationship(userClient.getId(),pageId);
+            if ((rel==null&&pageId==userClient.getId())||!rel.getRelates().equals(FriendshipStatus.FRIEND))
+                return new ResponseEntity<>("You have to be friends !",HttpStatus.NOT_ACCEPTABLE);
+            User userPage=userDao.findById(pageId);
+            Post post=new Post();
+            post.setUserPagePosted(userPage);
+            post.setUserPosted(userClient);
+            post.setDatePosted(new Date());
+            post.setMessage(message);
+            postDao.save(post);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -40,10 +49,7 @@ public class PostService {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    public List<Post> getPosts(String userIdPage){
 
-
-    }
 
     private boolean checkLinks(String text) {
         String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&amp;@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&amp;@#/%=~_()|]";
