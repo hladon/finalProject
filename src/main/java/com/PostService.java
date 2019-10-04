@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -49,7 +50,12 @@ public class PostService {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-
+    public List<Post> getPosts(HttpSession session,long pageId){
+        long userPostedId=(long)session.getAttribute("userPosted");
+        if (userPostedId==0)
+            return postDao.getPosts(pageId);
+        return postDao.getPosts(pageId,userPostedId);
+    }
 
     private boolean checkLinks(String text) {
         String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&amp;@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&amp;@#/%=~_()|]";

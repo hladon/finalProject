@@ -2,6 +2,7 @@ package com;
 
 
 import com.models.Password;
+import com.models.Post;
 import com.models.Relationship;
 import com.models.User;
 import com.repository.UserDao;
@@ -116,11 +117,12 @@ public class UserController extends HttpServlet {
     @RequestMapping(path = "/addPost", method = RequestMethod.POST)
     public ResponseEntity<String> addPost (HttpSession session,@RequestParam String message,@RequestParam String url){
         User userClient = (User) session.getAttribute("user");
-//        if (userClient == null)
-//            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+        if (userClient == null)
+            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
         return postService.addPost(message,url,userClient);
 
     }
+
     public List<Relationship> getIncomeRequests(String userId) {
         long userIdLong = Long.parseLong(userId);
         return userService.getIncomeRequests(userIdLong);

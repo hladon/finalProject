@@ -3,9 +3,8 @@ package com.restrictions;
 import com.UserService;
 import com.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+
 public class MaxRequests extends Validation {
 
     @Autowired

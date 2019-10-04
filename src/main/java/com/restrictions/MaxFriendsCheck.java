@@ -3,9 +3,8 @@ package com.restrictions;
 import com.models.User;
 import com.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+
 public class MaxFriendsCheck extends Validation {
 
     @Autowired
