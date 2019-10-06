@@ -51,8 +51,8 @@ public class PostService {
     }
 
     public List<Post> getPosts(HttpSession session,long pageId){
-        long userPostedId=(long)session.getAttribute("userPosted");
-        if (userPostedId==0)
+        Long userPostedId=(Long)session.getAttribute("userPosted");
+        if (userPostedId==null)
             return postDao.getPosts(pageId);
         return postDao.getPosts(pageId,userPostedId);
     }

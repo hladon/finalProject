@@ -1,4 +1,4 @@
-package com.restrictions;
+package com.validators;
 
 import com.models.User;
 

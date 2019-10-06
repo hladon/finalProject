@@ -1,17 +1,17 @@
-package com.restrictions;
+package com.validators;
 
 import com.models.Relationship;
 import com.models.User;
 import com.repository.RelationshipDAO;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 
 import java.util.Date;
 
 
 public class TimeCheck extends Validation {
-    @Autowired
-    private RelationshipDAO dao;
+
+    private RelationshipDAO dao=new RelationshipDAO();
 
     private User userTo=null;
 

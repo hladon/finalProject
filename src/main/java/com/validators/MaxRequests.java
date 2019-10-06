@@ -1,14 +1,13 @@
-package com.restrictions;
+package com.validators;
 
 import com.UserService;
 import com.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 
 public class MaxRequests extends Validation {
 
-    @Autowired
-    private UserService userService;
+    private UserService userService=  new UserService();
 
     @Override
     public boolean check(User user) {

@@ -29,6 +29,21 @@
         <p>  <input type="submit" value="post"></p>
     </form>
 </div>
+<div>
+    <form id="postId-form">
+        <input  id="postedId" name="postedId" >
+        <p>  <input type="submit" value="PostedId"></p>
+    </form>
+    <table>
+        <tbody>
+        <tr th:each="post : ${posts}">
+            <td><span th:text="${post.message}"> ID User </span></td>
+            <td><span th:text="${post.datePosted}"> Request </span></td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 <style>
     .left{
@@ -61,6 +76,18 @@
             }
         });
     });
-
+    $("#post-form").submit(function(){
+        event.preventDefault();
+        $.ajax({
+            url:"http://localhost:8081/addPostFilter",
+            type:"GET",
+            data:$('#postId-form').serialize(),
+            success: function success (){
+                alert('Reload your page!');},
+            error:function error (xhr){
+                alert(xhr.responseText);
+            }
+        });
+    });
 </script>
 </html>

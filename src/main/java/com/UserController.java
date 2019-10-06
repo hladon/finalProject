@@ -6,6 +6,8 @@ import com.models.Post;
 import com.models.Relationship;
 import com.models.User;
 import com.repository.UserDao;
+import com.validators.MaxFriendsCheck;
+import com.validators.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +71,8 @@ public class UserController extends HttpServlet {
         try {
             user = userDao.findById(userId);
             model.addAttribute("user", user);
-
+            List<Post> posts=postService.getPosts(session,userId);
+            model.addAttribute("posts",posts);
             if (id != userId) {
                 rel = userService.getRelationship(id, userId);
                 model.addAttribute("relationship", rel);
@@ -122,19 +125,16 @@ public class UserController extends HttpServlet {
         return postService.addPost(message,url,userClient);
 
     }
+//    @RequestMapping(path = "/addPostFilter", method = RequestMethod.GET)
+//    public ResponseEntity<String> addPostFilter(HttpSession session,@RequestParam String postedId){
+//
+//    }
 
-    public List<Relationship> getIncomeRequests(String userId) {
-        long userIdLong = Long.parseLong(userId);
-        return userService.getIncomeRequests(userIdLong);
-    }
-
-    public List<Relationship> getOutcomeRequests(String userId) {
-        long userIdLong = Long.parseLong(userId);
-        return userService.getOutcomeRequests(userIdLong);
-    }
 
     @RequestMapping(path = "/test", method = RequestMethod.GET)
     public String test() {
-        return userService.getRelationship(1,2).toString();
+        Validation val=new MaxFriendsCheck();
+        User user=userDao.findById(21);
+        return String.valueOf(val.check(user));
     }
 }
