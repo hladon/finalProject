@@ -54,6 +54,7 @@ public class PostService {
         Long userPostedId=(Long)session.getAttribute("userPosted");
         if (userPostedId==null)
             return postDao.getPosts(pageId);
+
         return postDao.getPosts(pageId,userPostedId);
     }
 

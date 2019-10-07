@@ -133,7 +133,7 @@ public class UserController extends HttpServlet {
 
     @RequestMapping(path = "/test", method = RequestMethod.GET)
     public String test() {
-        Validation val=new MaxFriendsCheck();
+        MaxFriendsCheck val=new MaxFriendsCheck();
         User user=userDao.findById(21);
         return String.valueOf(val.check(user));
     }

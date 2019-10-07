@@ -2,7 +2,8 @@ package com.models;
 
 public enum FriendshipStatus {
     FRIEND,
-    FORMERFRIEND,
-    REQUESTSEND,
-    REQUESTDECLINE
+    FORMER_FRIEND,
+    REQUEST_SEND,
+    REQUEST_DECLINE,
+    REQUEST_CANCELED
 }

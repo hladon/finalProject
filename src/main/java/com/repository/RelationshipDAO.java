@@ -29,7 +29,7 @@ public class RelationshipDAO extends DAO<Relationship> {
         return entityManager.createNativeQuery("" +
                 "SELECT * FROM RELATIONSHIP WHERE  ID_USER_TO=?1 AND RELATES=?2",Relationship.class)
                 .setParameter(1,userId)
-                .setParameter(2, FriendshipStatus.REQUESTSEND.name())
+                .setParameter(2, FriendshipStatus.REQUEST_SEND.name())
                 .getResultList();
     }
 
@@ -37,7 +37,7 @@ public class RelationshipDAO extends DAO<Relationship> {
         return entityManager.createNativeQuery("" +
                 "SELECT * FROM RELATIONSHIP WHERE  ID_USER_FROM=?1 AND RELATES=?2",Relationship.class)
                 .setParameter(1,userId)
-                .setParameter(2, FriendshipStatus.REQUESTSEND.name())
+                .setParameter(2, FriendshipStatus.REQUEST_SEND.name())
                 .getResultList();
     }
 

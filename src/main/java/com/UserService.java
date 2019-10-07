@@ -59,9 +59,9 @@ public class UserService {
             if(!relationship.getRelates().equals(FriendshipStatus.FRIEND)){
                 User user=userDao.findById(userIdFrom);
                 User userTo=userDao.findById(userIdTo);
-                if (!checkRestrictions(user,userTo,FriendshipStatus.REQUESTSEND))
+                if (!checkRestrictions(user,userTo,FriendshipStatus.REQUEST_SEND))
                     return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-                relationship.setRelates(FriendshipStatus.REQUESTSEND);
+                relationship.setRelates(FriendshipStatus.REQUEST_SEND);
                 relationshipDAO.save(relationship);
             }else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -124,11 +124,11 @@ public class UserService {
     }
 
     private boolean checkRestrictions(User user,User userTo,FriendshipStatus status){
-        if (status.equals(FriendshipStatus.FORMERFRIEND)){
+        if (status.equals(FriendshipStatus.FORMER_FRIEND)){
             validation=new TimeCheck(userTo);
         }else if (status.equals(FriendshipStatus.FRIEND)){
             validation=new MaxFriendsCheck();
-        }else if (status.equals(FriendshipStatus.REQUESTSEND)){
+        }else if (status.equals(FriendshipStatus.REQUEST_SEND)){
             validation=new MaxRequests();
         }else {
             return true;
