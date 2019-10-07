@@ -1,30 +1,25 @@
 package com.validators;
 
+import com.models.FriendshipStatus;
 import com.models.Relationship;
-import com.models.User;
-import com.repository.RelationshipDAO;
-
-
-
 import java.util.Date;
 
 
 public class TimeCheck extends Validation {
 
-    private RelationshipDAO dao=new RelationshipDAO();
+    private Relationship relationship;
 
-    private User userTo=null;
-
-    public TimeCheck(User userTo) {
-        this.userTo = userTo;
+    public TimeCheck(Relationship relationship) {
+        this.relationship = relationship;
     }
 
     @Override
-    public boolean check(User user) {
-        Relationship rel =dao.getRelationship(user.getId(),userTo.getId());
-        if (rel.getLastChanges().getTime()-new Date().getTime()<86400000*3)
-            return false;
-        return checkNext(user);
+    public boolean check(FriendshipStatus status) throws ExceedLimits {
+
+        if (relationship.equals(FriendshipStatus.FORMER_FRIEND)
+                &&(relationship.getLastChanges().getTime()-new Date().getTime()<86400000*3))
+            throw new ExceedLimits();
+        return checkNext(status);
     }
 
 

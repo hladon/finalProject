@@ -1,24 +1,26 @@
 package com.validators;
 
+import com.models.FriendshipStatus;
 import com.models.User;
-import com.repository.UserDao;
-import org.springframework.beans.factory.annotation.Autowired;
 
+
+
+import java.util.List;
 
 
 public class MaxFriendsCheck extends Validation {
 
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    public MaxFriendsCheck() {
+    List<User> list;
+
+    public MaxFriendsCheck(List<User> list) {
+        this.list=list;
     }
 
     @Override
-    public boolean check(User user) {
-        if(userDao.getFriends(user.getId()).size()>100){
-            return false;
+    public boolean check(FriendshipStatus status) throws ExceedLimits {
+        if(status.equals(FriendshipStatus.FRIEND)&&list.size()>100){
+            throw new ExceedLimits();
         }
-        return checkNext(user);
+        return checkNext(status);
     }
 }

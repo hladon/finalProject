@@ -1,5 +1,6 @@
 package com.validators;
 
+import com.models.FriendshipStatus;
 import com.models.User;
 
 public abstract class Validation {
@@ -10,13 +11,13 @@ public abstract class Validation {
         return next;
     }
 
-    public abstract boolean check(User user);
+    public abstract boolean check(FriendshipStatus status) throws ExceedLimits;
 
-    protected boolean checkNext(User user ){
+    protected boolean checkNext(FriendshipStatus status )throws ExceedLimits{
         if (next == null) {
             return true;
         }
-        return next.check(user);
+        return next.check(status);
     }
 
 

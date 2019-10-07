@@ -5,10 +5,7 @@ import com.models.Relationship;
 import com.models.User;
 import com.repository.RelationshipDAO;
 import com.repository.UserDao;
-import com.validators.MaxFriendsCheck;
-import com.validators.MaxRequests;
-import com.validators.TimeCheck;
-import com.validators.Validation;
+import com.validators.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +20,6 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserDao userDao;
-
-    private Validation validation;
 
     @Autowired
     private RelationshipDAO relationshipDAO;
@@ -55,38 +50,33 @@ public class UserService {
 
     public ResponseEntity<String> addRelationship(long userIdFrom, long userIdTo) {
         try {
-            Relationship relationship=getRelationship(userIdFrom, userIdTo);
-            if(!relationship.getRelates().equals(FriendshipStatus.FRIEND)){
-                User user=userDao.findById(userIdFrom);
-                User userTo=userDao.findById(userIdTo);
-                if (!checkRestrictions(user,userTo,FriendshipStatus.REQUEST_SEND))
-                    return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-                relationship.setRelates(FriendshipStatus.REQUEST_SEND);
-                relationshipDAO.save(relationship);
-            }else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+            Relationship relationship = getRelationship(userIdFrom, userIdTo);
+            FriendshipStatus status = FriendshipStatus.REQUEST_SEND;
+            validateRelationshipUpdate(relationship, userIdFrom, userIdTo, status);
+            relationship.setRelates(status);
+            relationshipDAO.save(relationship);
         } catch (ConstraintViolationException | NumberFormatException cve) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (ExceedLimits e) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception e) {
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> updateRelationship(long userIdFrom,String userIdTo, String status) {
+    public ResponseEntity<String> updateRelationship(long userIdFrom, String userIdTo, String status) {
         try {
-            long longUserTo=Long.parseLong(userIdTo);
-            FriendshipStatus friendshipStatus = FriendshipStatus.valueOf(status);
-            User user=userDao.findById(userIdFrom);
-            User userTo=userDao.findById(longUserTo);
-            if (!checkRestrictions(user,userTo,friendshipStatus))
-                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            long longUserTo = Long.parseLong(userIdTo);
             Relationship relationship = getRelationship(userIdFrom, longUserTo);
+            FriendshipStatus friendshipStatus = FriendshipStatus.valueOf(status);
+            validateRelationshipUpdate(relationship, userIdFrom, longUserTo, friendshipStatus);
             relationship.setRelates(friendshipStatus);
             relationshipDAO.update(relationship);
         } catch (ConstraintViolationException | IllegalArgumentException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (ExceedLimits e) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception e) {
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -123,17 +113,21 @@ public class UserService {
         return true;
     }
 
-    private boolean checkRestrictions(User user,User userTo,FriendshipStatus status){
-        if (status.equals(FriendshipStatus.FORMER_FRIEND)){
-            validation=new TimeCheck(userTo);
-        }else if (status.equals(FriendshipStatus.FRIEND)){
-            validation=new MaxFriendsCheck();
-        }else if (status.equals(FriendshipStatus.REQUEST_SEND)){
-            validation=new MaxRequests();
-        }else {
-            return true;
-        }
-        return validation.check(user);
+    private void validateRelationshipUpdate(Relationship relationship, long userIdFrom, long userIdTo, FriendshipStatus status) throws ExceedLimits {
+        User user = userDao.findById(userIdFrom);
+        User userTo = userDao.findById(userIdTo);
+
+        if (relationship == null || user == null || userTo == null)
+            throw new IllegalArgumentException();
+
+        Validation maxFriends = new MaxFriendsCheck(userDao.getFriends(userIdFrom));
+        Validation maxRequest = new MaxRequests(relationshipDAO.getOutcomeRequests(userIdFrom));
+        Validation timeCheck = new TimeCheck(relationship);
+
+        maxFriends.linkWith(maxRequest);
+        maxRequest.linkWith(timeCheck);
+
+        maxFriends.check(status);
     }
 
 }

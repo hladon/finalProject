@@ -1,20 +1,24 @@
 package com.validators;
 
-import com.UserService;
-import com.models.User;
 
+import com.models.FriendshipStatus;
+import com.models.Relationship;
+import java.util.List;
 
 
 public class MaxRequests extends Validation {
 
-    private UserService userService=  new UserService();
+    private List<Relationship> list;
+
+    public MaxRequests(List<Relationship> list) {
+        this.list = list;
+    }
 
     @Override
-    public boolean check(User user) {
-        int size=userService.getOutcomeRequests(user.getId()).size();
-        if (size>10)
-        return false;
+    public boolean check(FriendshipStatus status)throws ExceedLimits {
+        if (status.equals(FriendshipStatus.REQUEST_SEND)&&list.size()>10)
+            throw new ExceedLimits();
 
-        return checkNext(user);
+        return checkNext(status);
     }
 }
