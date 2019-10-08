@@ -125,16 +125,18 @@ public class UserController extends HttpServlet {
         return postService.addPost(message,url,userClient);
 
     }
-//    @RequestMapping(path = "/addPostFilter", method = RequestMethod.GET)
-//    public ResponseEntity<String> addPostFilter(HttpSession session,@RequestParam String postedId){
-//
-//    }
-
-
-    @RequestMapping(path = "/test", method = RequestMethod.GET)
-    public String test() {
-        MaxFriendsCheck val=new MaxFriendsCheck();
-        User user=userDao.findById(21);
-        return String.valueOf(val.check(user));
+    @RequestMapping(path = "/addPostId", method = RequestMethod.GET)
+    public ResponseEntity<String> addPostFilter(HttpSession session,@RequestParam String postedId){
+        if (postedId==null)
+            return new ResponseEntity<String> ("First select user ID",HttpStatus.BAD_REQUEST);
+        return postService.addPostId(session,postedId);
     }
+
+    @RequestMapping(path = "/addPostFilter", method = RequestMethod.GET)
+    public ResponseEntity<String> addFilter(HttpSession session,@RequestParam String filter){
+        return postService.addPostFilter(session,filter);
+    }
+
+
+
 }

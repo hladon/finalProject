@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -51,12 +52,39 @@ public class PostService {
     }
 
     public List<Post> getPosts(HttpSession session,long pageId){
-        Long userPostedId=(Long)session.getAttribute("userPosted");
-        if (userPostedId==null)
-            return postDao.getPosts(pageId);
+        try {
+            Long userPostedId=(Long)session.getAttribute("userPosted");
+            if (userPostedId==null||userPostedId.equals("ALL_ID"))
+                return postDao.getPosts(pageId);
+            if (userPostedId.equals("OWNER_ID"))
+                return postDao.getPosts(pageId,pageId);
+            if (userPostedId.equals("USER_ID")){
+                User user=(User)session.getAttribute("user");
+                return postDao.getPosts(pageId,user.getId());
+            }
+            return postDao.getPosts(pageId,userPostedId);
+        }catch (Exception e){
+            return null;
+        }
 
-        return postDao.getPosts(pageId,userPostedId);
     }
+
+    public ResponseEntity<String> addPostId(HttpSession session, String userId){
+        try{
+            Long user=Long.parseLong(userId);
+            session.setAttribute("userPosted",user);
+        }catch (Exception e){
+            return new ResponseEntity<>("Enter Id",HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<String>("Reload page!",HttpStatus.ACCEPTED);
+    }
+
+    public ResponseEntity<String> addPostFilter(HttpSession session, String filter){
+        session.setAttribute("userPosted",filter);
+        return new ResponseEntity<String>("Reload page!",HttpStatus.ACCEPTED);
+    }
+
 
     private boolean checkLinks(String text) {
         String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&amp;@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&amp;@#/%=~_()|]";

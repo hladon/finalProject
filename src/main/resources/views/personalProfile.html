@@ -68,16 +68,20 @@
     <form id="postId-form">
         <input  id="postedId" name="postedId" value="" >
         <input type="submit" id="thisId" value="Only this user">
-        <input type="submit" id="userId" value="UserId">
-        <input type="submit" id="ownerId" value="Page owner">
-        <input type="submit" id="thisId" value="PostedId">
     </form>
+    <form id="post_filter">
+        <input type="hidden" id="filter" name="filter" data-name="filter" value="">
+        <input type="submit" id="userId" onclick="SetUserId();" value="Yours post">
+        <input type="submit" id="ownerId" onclick="SetOwnerId();" value="Page owner">
+        <input type="submit" id="allId" onclick="SetAllId();" value="All">
+    </form>
+</div>
+<div>
     <table>
         <tbody>
         <tr th:each="post : ${posts}">
             <td><span th:text="${post.message}"> ID User </span></td>
             <td><span th:text="${post.datePosted}"> Request </span></td>
-
         </tr>
         </tbody>
     </table>
@@ -101,6 +105,17 @@
 <script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
 <script language="JavaScript" type="text/javascript">
     document.getElementById('hiddenUrl').value = location.pathname;
+
+        function SetUserId(){
+    document.getElementById('filter').value='USER_ID';
+    }
+            function SetOwnerId(){
+    document.getElementById('filter').value='OWNER_ID';
+    }
+            function SetAllId(){
+    document.getElementById('filter').value='ALL_ID';
+    }
+
     $("#post-form").submit(function(){
         event.preventDefault();
         $.ajax({
@@ -114,12 +129,26 @@
             }
         });
     });
-    $("#post-form").submit(function(){
+    $("#postId-form").submit(function(){
+        event.preventDefault();
+        $.ajax({
+            url:"http://localhost:8081/addPostId",
+            type:"GET",
+            data:$('#postId-form').serialize(),
+            success: function success (){
+                alert('Reload your page!');},
+            error:function error (xhr){
+                alert(xhr.responseText);
+            }
+        });
+    });
+
+        $("#post-filter").submit(function(){
         event.preventDefault();
         $.ajax({
             url:"http://localhost:8081/addPostFilter",
             type:"GET",
-            data:$('#postId-form').serialize(),
+            data:$('#post-filter').serialize(),
             success: function success (){
                 alert('Reload your page!');},
             error:function error (xhr){
