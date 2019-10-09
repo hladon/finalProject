@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
+
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -53,15 +53,16 @@ public class PostService {
 
     public List<Post> getPosts(HttpSession session,long pageId){
         try {
-            Long userPostedId=(Long)session.getAttribute("userPosted");
-            if (userPostedId==null||userPostedId.equals("ALL_ID"))
+            String postFilter=(String)session.getAttribute("userPosted");
+            if (postFilter==null||postFilter.equals("ALL_ID"))
                 return postDao.getPosts(pageId);
-            if (userPostedId.equals("OWNER_ID"))
+            if (postFilter.equals("OWNER_ID"))
                 return postDao.getPosts(pageId,pageId);
-            if (userPostedId.equals("USER_ID")){
+            if (postFilter.equals("USER_ID")){
                 User user=(User)session.getAttribute("user");
                 return postDao.getPosts(pageId,user.getId());
             }
+            Long userPostedId=Long.parseLong(postFilter);
             return postDao.getPosts(pageId,userPostedId);
         }catch (Exception e){
             return null;

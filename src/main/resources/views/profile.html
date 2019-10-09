@@ -35,10 +35,9 @@
         <input type="submit" id="thisId" value="Only this user">
     </form>
     <form id="post_filter">
-        <input type="hidden" id="filter" name="filter" data-name="filter" value="">
-        <input type="submit" id="userId" onclick="SetUserId();" value="Yours post">
-        <input type="submit" id="ownerId" onclick="SetOwnerId();" value="Page owner">
-        <input type="submit" id="allId" onclick="SetAllId();" value="All">
+        <input type="submit" id="USER_ID" onclick="sendFilter(this.id)" value="Yours post">
+        <input type="submit" id="OWNER_ID" onclick="sendFilter(this.id)" value="Page owner">
+        <input type="submit" id="ALL_ID" onclick="sendFilter(this.id)" value="All">
     </form>
 </div>
 <div>
@@ -73,15 +72,20 @@
     document.getElementById('hiddenUrl').value = location.pathname;
 
 
-        function SetUserId(){
-    document.getElementById('filter').value='USER_ID';
-    }
-            function SetOwnerId(){
-    document.getElementById('filter').value='OWNER_ID';
-    }
-            function SetAllId(){
-    document.getElementById('filter').value='ALL_ID';
-    }
+
+    function sendFilter(value){
+     event.preventDefault();
+        $.ajax({
+            url:"http://localhost:8081/addPostFilter",
+            type:"GET",
+            data:"filter="+value,
+            success: function success (){
+                alert('Reload your page!');},
+            error:function error (xhr){
+                alert(xhr.responseText);
+            }
+    });
+    };
 
     $("#post-form").submit(function(){
         event.preventDefault();
@@ -110,18 +114,5 @@
         });
     });
 
-        $("#post-filter").submit(function(){
-        event.preventDefault();
-        $.ajax({
-            url:"http://localhost:8081/addPostFilter",
-            type:"GET",
-            data:$('#post-filter').serialize(),
-            success: function success (){
-                alert('Reload your page!');},
-            error:function error (xhr){
-                alert(xhr.responseText);
-            }
-        });
-    });
 </script>
 </html>
