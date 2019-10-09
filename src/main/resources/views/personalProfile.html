@@ -108,12 +108,45 @@
 
         function SetUserId(){
     document.getElementById('filter').value='USER_ID';
+            event.preventDefault();
+            $.ajax({
+                url:"http://localhost:8081/addPostFilter",
+                type:"GET",
+                data:$('#post-filter').serialize(),
+                success: function success (){
+                    alert('Reload your page!');},
+                error:function error (xhr){
+                    alert(xhr.responseText);
+                }
+            });
     }
             function SetOwnerId(){
     document.getElementById('filter').value='OWNER_ID';
+                event.preventDefault();
+                $.ajax({
+                    url:"http://localhost:8081/addPostFilter",
+                    type:"GET",
+                    data:$('#post-filter').serialize(),
+                    success: function success (){
+                        alert('Reload your page!');},
+                    error:function error (xhr){
+                        alert(xhr.responseText);
+                    }
+                });
     }
             function SetAllId(){
     document.getElementById('filter').value='ALL_ID';
+                event.preventDefault();
+                $.ajax({
+                    url:"http://localhost:8081/addPostFilter",
+                    type:"GET",
+                    data:$('#post-filter').serialize(),
+                    success: function success (){
+                        alert('Reload your page!');},
+                    error:function error (xhr){
+                        alert(xhr.responseText);
+                    }
+                });
     }
 
     $("#post-form").submit(function(){
