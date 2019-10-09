@@ -45,19 +45,13 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception {
+    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session)  {
         User user = null;
         try {
-            user = userService.login(pass.getPassword(), pass.getPhone());
-            session.setAttribute("user", user);
+            return userService.login(pass,session);
         } catch (Exception e) {
-            System.out.println(e);
             return new ResponseEntity<String>("Internal error!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (user == null) {
-            return new ResponseEntity<String>("Wrong phone or password!", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<String>(HttpStatus.ACCEPTED);
     }
 
     @RequestMapping(path = "/user/{userId}", method = RequestMethod.GET)

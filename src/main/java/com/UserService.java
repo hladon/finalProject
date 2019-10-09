@@ -1,6 +1,7 @@
 package com;
 
 import com.models.FriendshipStatus;
+import com.models.Password;
 import com.models.Relationship;
 import com.models.User;
 import com.repository.RelationshipDAO;
@@ -11,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
@@ -24,12 +27,16 @@ public class UserService {
     @Autowired
     private RelationshipDAO relationshipDAO;
 
-    public User login(String password, String phone) {
-        User user = userDao.isExist(phone);
-        if (user.getPassword().equals(password))
-            return user;
-        return null;
+    public ResponseEntity<String> login( Password pass, HttpSession session)  {
+        User user = userDao.isExist(pass.getPhone());
+        if (user == null||!user.getPassword().equals(pass.getPassword())) {
+            return new ResponseEntity<String>("Wrong phone or password!", HttpStatus.BAD_REQUEST);
+        }
+        session.setAttribute("user", user);
+        return new ResponseEntity<String>(HttpStatus.ACCEPTED);
     }
+
+
 
     public ResponseEntity<String> registerUser(User user) {
         if (!checkPhone(user.getPhone()))
