@@ -108,14 +108,16 @@ public class UserService {
         if (relationship == null || user == null || userTo == null)
             throw new IllegalArgumentException();
 
+        Validation statusOrder=new StatusOrder(status);
         Validation maxFriends = new MaxFriendsCheck(userDao.getFriends(userIdFrom));
         Validation maxRequest = new MaxRequests(relationshipDAO.getOutcomeRequests(userIdFrom));
         Validation timeCheck = new TimeCheck(relationship);
 
+        statusOrder.linkWith(maxRequest);
         maxFriends.linkWith(maxRequest);
         maxRequest.linkWith(timeCheck);
 
-        maxFriends.check(status);
+        statusOrder.check(status);
     }
 
 }

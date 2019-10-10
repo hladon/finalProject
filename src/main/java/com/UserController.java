@@ -136,10 +136,14 @@ public class UserController extends HttpServlet {
 
     @RequestMapping(path = "/addPost", method = RequestMethod.POST)
     public ResponseEntity<String> addPost(HttpSession session, @RequestParam String message, @RequestParam String url) {
-        User userClient = (User) session.getAttribute("user");
-        if (userClient == null)
-            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-        return postService.addPost(message, url, userClient);
+        try {
+            User userClient = (User) session.getAttribute("user");
+            if (userClient == null)
+                new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+            return postService.addPost(message, url, userClient);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 
@@ -147,7 +151,12 @@ public class UserController extends HttpServlet {
     public ResponseEntity<String> addPostFilter(HttpSession session, @RequestParam String postedId) {
         if (postedId == null)
             return new ResponseEntity<String>("First select user ID", HttpStatus.BAD_REQUEST);
-        return postService.addPostId(session, postedId);
+        try {
+            return postService.addPostId(session, postedId);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Enter Id", HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @RequestMapping(path = "/addPostFilter", method = RequestMethod.GET)
