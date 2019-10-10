@@ -6,8 +6,10 @@ import com.models.Post;
 import com.models.Relationship;
 import com.models.User;
 import com.repository.UserDao;
+import com.validators.ExceedLimits;
 import com.validators.MaxFriendsCheck;
 import com.validators.Validation;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +47,10 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session)  {
+    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) {
         User user = null;
         try {
-            return userService.login(pass,session);
+            return userService.login(pass, session);
         } catch (Exception e) {
             return new ResponseEntity<String>("Internal error!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -65,13 +67,13 @@ public class UserController extends HttpServlet {
         try {
             user = userDao.findById(userId);
             model.addAttribute("user", user);
-            List<Post> posts=postService.getPosts(session,userId);
-            model.addAttribute("posts",posts);
+            List<Post> posts = postService.getPosts(session, userId);
+            model.addAttribute("posts", posts);
             if (id != userId) {
                 rel = userService.getRelationship(id, userId);
                 model.addAttribute("relationship", rel);
-                session.setAttribute("lastVisited",userId);
-            }else {
+                session.setAttribute("lastVisited", userId);
+            } else {
                 List<Relationship> outRequests = userService.getOutcomeRequests(userId);
                 List<Relationship> inRequests = userService.getIncomeRequests(userId);
                 model.addAttribute("outRequests", outRequests);
@@ -90,47 +92,68 @@ public class UserController extends HttpServlet {
 
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@ModelAttribute User user) {
-        return userService.registerUser(user);
+        try {
+            return userService.registerUser(user);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(path = "/addRelationship", method = RequestMethod.GET)
     public ResponseEntity<String> addRelationship(HttpSession session) {
-        User userClient = (User) session.getAttribute("user");
-        if (userClient == null)
-            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-        long userIdTo=(Long) session.getAttribute("lastVisited");
-        long userIdFrom=userClient.getId();
-        return userService.addRelationship(userIdFrom, userIdTo);
+        try {
+            User userClient = (User) session.getAttribute("user");
+            if (userClient == null)
+                new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+            long userIdTo = (Long) session.getAttribute("lastVisited");
+            long userIdFrom = userClient.getId();
+            return userService.addRelationship(userIdFrom, userIdTo);
+        } catch (ConstraintViolationException | NumberFormatException cve) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (ExceedLimits e) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(path = "/updateRelationship", method = RequestMethod.GET)
-    public ResponseEntity<String> updateRelationship(HttpSession session,@RequestParam String userIdTo,  @RequestParam String status) {
-        User userClient = (User) session.getAttribute("user");
-        if (userClient == null)
-            new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-        long userIdFrom=userClient.getId();
-        return userService.updateRelationship(userIdFrom, userIdTo, status);
+    public ResponseEntity<String> updateRelationship(HttpSession session, @RequestParam String userIdTo, @RequestParam String status) {
+        try {
+            User userClient = (User) session.getAttribute("user");
+            if (userClient == null)
+                new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+            long userIdFrom = userClient.getId();
+            return userService.updateRelationship(userIdFrom, userIdTo, status);
+        } catch (ConstraintViolationException | IllegalArgumentException ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (ExceedLimits e) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
     @RequestMapping(path = "/addPost", method = RequestMethod.POST)
-    public ResponseEntity<String> addPost (HttpSession session,@RequestParam String message,@RequestParam String url){
+    public ResponseEntity<String> addPost(HttpSession session, @RequestParam String message, @RequestParam String url) {
         User userClient = (User) session.getAttribute("user");
         if (userClient == null)
             new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-        return postService.addPost(message,url,userClient);
+        return postService.addPost(message, url, userClient);
 
     }
+
     @RequestMapping(path = "/addPostId", method = RequestMethod.GET)
-    public ResponseEntity<String> addPostFilter(HttpSession session,@RequestParam String postedId){
-        if (postedId==null)
-            return new ResponseEntity<String> ("First select user ID",HttpStatus.BAD_REQUEST);
-        return postService.addPostId(session,postedId);
+    public ResponseEntity<String> addPostFilter(HttpSession session, @RequestParam String postedId) {
+        if (postedId == null)
+            return new ResponseEntity<String>("First select user ID", HttpStatus.BAD_REQUEST);
+        return postService.addPostId(session, postedId);
     }
 
     @RequestMapping(path = "/addPostFilter", method = RequestMethod.GET)
-    public ResponseEntity<String> addFilter(HttpSession session,@RequestParam String filter){
-        return postService.addPostFilter(session,filter);
+    public ResponseEntity<String> addFilter(HttpSession session, @RequestParam String filter) {
+        return postService.addPostFilter(session, filter);
     }
-
 
 
 }

@@ -27,9 +27,9 @@ public class UserService {
     @Autowired
     private RelationshipDAO relationshipDAO;
 
-    public ResponseEntity<String> login( Password pass, HttpSession session)  {
+    public ResponseEntity<String> login(Password pass, HttpSession session) {
         User user = userDao.isExist(pass.getPhone());
-        if (user == null||!user.getPassword().equals(pass.getPassword())) {
+        if (user == null || !user.getPassword().equals(pass.getPassword())) {
             return new ResponseEntity<String>("Wrong phone or password!", HttpStatus.BAD_REQUEST);
         }
         session.setAttribute("user", user);
@@ -37,56 +37,37 @@ public class UserService {
     }
 
 
-
     public ResponseEntity<String> registerUser(User user) {
         if (!checkPhone(user.getPhone()))
             return new ResponseEntity<>("Wrong phone number!", HttpStatus.BAD_REQUEST);
         user.setDateRegistered(new Date());
-        try {
-            if (userDao.isExist(user.getPhone()) == null) {
-                User newUser = userDao.save(user);
-                return new ResponseEntity<String>(HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<String>("Such user exist!", HttpStatus.CONFLICT);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+        if (userDao.isExist(user.getPhone()) == null) {
+            User newUser = userDao.save(user);
+            return new ResponseEntity<String>(HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<String>("Such user exist!", HttpStatus.CONFLICT);
         }
+
     }
 
 
-    public ResponseEntity<String> addRelationship(long userIdFrom, long userIdTo) {
-        try {
-            Relationship relationship = getRelationship(userIdFrom, userIdTo);
-            FriendshipStatus status = FriendshipStatus.REQUEST_SEND;
-            validateRelationshipUpdate(relationship, userIdFrom, userIdTo, status);
-            relationship.setRelates(status);
-            relationshipDAO.save(relationship);
-        } catch (ConstraintViolationException | NumberFormatException cve) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (ExceedLimits e) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        } catch (Exception e) {
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<String> addRelationship(long userIdFrom, long userIdTo) throws Exception {
+
+        Relationship relationship = getRelationship(userIdFrom, userIdTo);
+        FriendshipStatus status = FriendshipStatus.REQUEST_SEND;
+        validateRelationshipUpdate(relationship, userIdFrom, userIdTo, status);
+        relationship.setRelates(status);
+        relationshipDAO.save(relationship);
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> updateRelationship(long userIdFrom, String userIdTo, String status) {
-        try {
-            long longUserTo = Long.parseLong(userIdTo);
-            Relationship relationship = getRelationship(userIdFrom, longUserTo);
-            FriendshipStatus friendshipStatus = FriendshipStatus.valueOf(status);
-            validateRelationshipUpdate(relationship, userIdFrom, longUserTo, friendshipStatus);
-            relationship.setRelates(friendshipStatus);
-            relationshipDAO.update(relationship);
-        } catch (ConstraintViolationException | IllegalArgumentException ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (ExceedLimits e) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        } catch (Exception e) {
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<String> updateRelationship(long userIdFrom, String userIdTo, String status) throws Exception {
+        long longUserTo = Long.parseLong(userIdTo);
+        Relationship relationship = getRelationship(userIdFrom, longUserTo);
+        FriendshipStatus friendshipStatus = FriendshipStatus.valueOf(status);
+        validateRelationshipUpdate(relationship, userIdFrom, longUserTo, friendshipStatus);
+        relationship.setRelates(friendshipStatus);
+        relationshipDAO.update(relationship);
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
