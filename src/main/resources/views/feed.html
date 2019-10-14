@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>News feeds</title>
+</head>
+<body>
+<div>
+    <h3> Latest news</h3>
+    <table>
+        <thead>
+        <tr>
+            <th> ID User </th>
+            <th> Message </th>
+            <th> Date </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${posts}">
+            <td><span th:text="${post.userPosted.id}"> ID User </span></td>
+            <td><span th:text="${post.message}"> Request </span></td>
+            <td><span th:text="${post.datePosted}"> Request </span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

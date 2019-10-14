@@ -78,6 +78,10 @@ public class PostService {
         return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
     }
 
+    public List<Post> getFriendsFeeds(long id){
+        List<Post> posts=postDao.getFriendsFeeds(id);
+        return posts;
+    }
 
     private boolean checkLinks(String text) {
         String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&amp;@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&amp;@#/%=~_()|]";

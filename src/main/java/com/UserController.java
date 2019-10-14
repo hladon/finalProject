@@ -164,5 +164,22 @@ public class UserController extends HttpServlet {
         return postService.addPostFilter(session, filter);
     }
 
+    @RequestMapping(path = "/user/feed", method = RequestMethod.GET)
+    public String getFeed(HttpSession session, Model model) {
+        User userClient = (User) session.getAttribute("user");
+        if (userClient == null)
+            return "login";
+        List<Post> posts;
+        try {
+            posts = postService.getFriendsFeeds(userClient.getId());
+            model.addAttribute("posts", posts);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return "feed";
+
+    }
+
 
 }

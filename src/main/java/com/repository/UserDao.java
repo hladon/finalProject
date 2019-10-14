@@ -25,10 +25,10 @@ public class UserDao extends DAO<User> {
 
     public List<User> getFriends(long id){
         return entityManager.createNativeQuery("" +
-                "SELECT * FROM USER_PROFILE JOIN RELATIONSHIP ON  USER_PROFILE.ID=RELATIONSHIP.ID_USER_FROM" +
-                " WHERE  USER_PROFILE.ID=?1  AND RELATES=?2 UNION" +
-                "SELECT * FROM USER_PROFILE JOIN RELATIONSHIP ON  USER_PROFILE.ID=RELATIONSHIP.ID_USER_TO" +
-                "WHERE  USER_PROFILE.ID=?1  AND RELATES=?2 ",User.class)
+                "SELECT USER_PROFILE.ID FROM USER_PROFILE JOIN RELATIONSHIP ON  USER_PROFILE.ID=RELATIONSHIP.ID_USER_FROM\n" +
+                "WHERE RELATIONSHIP.ID_USER_TO=?1 AND RELATES=?2 UNION\n" +
+                "SELECT USER_PROFILE.ID FROM USER_PROFILE JOIN RELATIONSHIP ON  USER_PROFILE.ID=RELATIONSHIP.ID_USER_TO\n" +
+                "WHERE RELATIONSHIP.ID_USER_FROM=?1 AND RELATES=?2",User.class)
                 .setParameter(1,id)
                 .setParameter(2, FriendshipStatus.FRIEND.name())
                 .getResultList();
