@@ -1,5 +1,6 @@
 package com.validators;
 
+import com.Exceptions.ExceedLimits;
 import com.models.FriendshipStatus;
 
 public class StatusOrder extends Validation {

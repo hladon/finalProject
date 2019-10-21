@@ -1,20 +1,15 @@
 package com;
 
+import com.Exceptions.ExceedLimits;
 import com.models.FriendshipStatus;
-import com.models.Password;
 import com.models.Relationship;
 import com.models.User;
 import com.repository.RelationshipDAO;
 import com.repository.UserDao;
 import com.validators.*;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
-import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 

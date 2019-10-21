@@ -6,11 +6,9 @@ import com.models.Post;
 import com.models.Relationship;
 import com.models.User;
 import com.repository.UserDao;
-import com.validators.ExceedLimits;
-import org.apache.commons.logging.LogFactory;
+import com.Exceptions.ExceedLimits;
 import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.logging.LogManager;
+
 
 
 @Controller
@@ -38,7 +36,9 @@ public class UserController extends HttpServlet {
     @Autowired
     private PostService postService;
 
-    private static final Logger logger= LogManager.getLogger(UserController.class);
+
+    private Logger logger=Logger.getLogger(UserController.class);
+    private org.apache.log4j.Logger log= org.apache.log4j.Logger.getLogger(UserController.class);
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String main() {
@@ -47,8 +47,8 @@ public class UserController extends HttpServlet {
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
     public String loginPage() {
-        logger.info("Main page opened!");
-        logger.error("error");
+        logger.info("faking shit");
+        log.error("2 log");
         return "login";
     }
 
