@@ -8,6 +8,8 @@ import com.repository.RelationshipDAO;
 import com.repository.UserDao;
 import com.validators.*;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +29,16 @@ public class UserService {
     @Autowired
     private RelationshipDAO relationshipDAO;
 
+
+
     public ResponseEntity<String> login(Password pass, HttpSession session) {
         User user = userDao.isExist(pass.getPhone());
         if (user == null || !user.getPassword().equals(pass.getPassword())) {
             return new ResponseEntity<String>("Wrong phone or password!", HttpStatus.BAD_REQUEST);
         }
         session.setAttribute("user", user);
-        return new ResponseEntity<String>(HttpStatus.ACCEPTED);
+
+        return new ResponseEntity<String>(user.getId().toString(),HttpStatus.ACCEPTED);
     }
 
 

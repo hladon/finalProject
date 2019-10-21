@@ -1,7 +1,6 @@
 package com.repository;
 
 import com.models.FriendshipStatus;
-import com.models.Relationship;
 import com.models.User;
 import org.springframework.stereotype.Repository;
 
