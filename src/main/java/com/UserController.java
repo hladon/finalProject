@@ -56,7 +56,12 @@ public class UserController extends HttpServlet {
     public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) {
         User user = null;
         try {
-            return userService.login(pass, session);
+            user = userDao.isExist(pass.getPhone());
+            if (user == null || !user.getPassword().equals(pass.getPassword())) {
+                return new ResponseEntity<String>("Wrong phone or password!", HttpStatus.BAD_REQUEST);
+            }
+            session.setAttribute("user", user);
+            return new ResponseEntity<String>(HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<String>("Internal error!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -73,7 +78,8 @@ public class UserController extends HttpServlet {
         try {
             user = userDao.findById(userId);
             model.addAttribute("user", user);
-            List<Post> posts = postService.getPosts(session, userId);
+            String postFilter = (String) session.getAttribute("userPosted");
+            List<Post> posts = postService.getPosts(postFilter, user, userId);
             model.addAttribute("posts", posts);
             if (id != userId) {
                 rel = userService.getRelationship(id, userId);
@@ -99,7 +105,11 @@ public class UserController extends HttpServlet {
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@ModelAttribute User user) {
         try {
-            return userService.registerUser(user);
+            if (userService.registerUser(user) == null)
+                return new ResponseEntity<String>("Such user exist!", HttpStatus.CONFLICT);
+            return new ResponseEntity<String>(HttpStatus.CREATED);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>("Wrong phone number!", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -113,7 +123,8 @@ public class UserController extends HttpServlet {
                 new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
             long userIdTo = (Long) session.getAttribute("lastVisited");
             long userIdFrom = userClient.getId();
-            return userService.addRelationship(userIdFrom, userIdTo);
+            userService.addRelationship(userIdFrom, userIdTo);
+            return new ResponseEntity<String>(HttpStatus.CREATED);
         } catch (ConstraintViolationException | NumberFormatException cve) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (ExceedLimits e) {
@@ -130,7 +141,8 @@ public class UserController extends HttpServlet {
             if (userClient == null)
                 new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
             long userIdFrom = userClient.getId();
-            return userService.updateRelationship(userIdFrom, userIdTo, status);
+            userService.updateRelationship(userIdFrom, userIdTo, status);
+            return new ResponseEntity<String>(HttpStatus.CREATED);
         } catch (ConstraintViolationException | IllegalArgumentException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (ExceedLimits e) {
@@ -146,7 +158,11 @@ public class UserController extends HttpServlet {
             User userClient = (User) session.getAttribute("user");
             if (userClient == null)
                 new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-            return postService.addPost(message, url, userClient);
+            if (postService.addPost(message, url, userClient) == null)
+                return new ResponseEntity<>("You have to be friends !", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Links not allowed here!", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -158,7 +174,9 @@ public class UserController extends HttpServlet {
         if (postedId == null)
             return new ResponseEntity<String>("First select user ID", HttpStatus.BAD_REQUEST);
         try {
-            return postService.addPostId(session, postedId);
+            Long user = Long.parseLong(postedId);
+            session.setAttribute("userPosted", user);
+            return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>("Enter Id", HttpStatus.BAD_REQUEST);
         }
@@ -167,7 +185,8 @@ public class UserController extends HttpServlet {
 
     @RequestMapping(path = "/addPostFilter", method = RequestMethod.GET)
     public ResponseEntity<String> addFilter(HttpSession session, @RequestParam String filter) {
-        return postService.addPostFilter(session, filter);
+        session.setAttribute("userPosted", filter);
+        return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
     }
 
     @RequestMapping(path = "/user/feed", method = RequestMethod.GET)
