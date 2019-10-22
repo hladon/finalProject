@@ -1,6 +1,7 @@
 package com;
 
 import com.Exceptions.ExceedLimits;
+import com.Exceptions.RepositoryException;
 import com.models.FriendshipStatus;
 import com.models.Relationship;
 import com.models.User;
@@ -54,16 +55,16 @@ public class UserService {
         return relationship;
     }
 
-    public List<Relationship> getIncomeRequests(long userId) {
+    public List<Relationship> getIncomeRequests(long userId) throws RepositoryException {
         return relationshipDAO.getIncomeRequests(userId);
     }
 
-    public List<Relationship> getOutcomeRequests(long userId) {
+    public List<Relationship> getOutcomeRequests(long userId) throws RepositoryException {
         return relationshipDAO.getOutcomeRequests(userId);
     }
 
 
-    public Relationship getRelationship(long idFrom, long idTo) {
+    public Relationship getRelationship(long idFrom, long idTo) throws RepositoryException {
         Relationship relate = relationshipDAO.getRelationship(idFrom, idTo);
         if (relate == null) {
             relate = new Relationship();
@@ -80,7 +81,7 @@ public class UserService {
         return true;
     }
 
-    private void validateRelationshipUpdate(Relationship relationship, long userIdFrom, long userIdTo, FriendshipStatus status) throws ExceedLimits {
+    private void validateRelationshipUpdate(Relationship relationship, long userIdFrom, long userIdTo, FriendshipStatus status) throws Exception {
         User user = userDao.findById(userIdFrom);
         User userTo = userDao.findById(userIdTo);
 

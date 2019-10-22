@@ -37,7 +37,7 @@ public class UserController extends HttpServlet {
     private PostService postService;
 
 
-    private Logger logger=Logger.getLogger(UserController.class);
+
     private org.apache.log4j.Logger log= org.apache.log4j.Logger.getLogger(UserController.class);
 
 
@@ -48,8 +48,7 @@ public class UserController extends HttpServlet {
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
     public String loginPage() {
-        logger.info("faking shit");
-        log.error("2 log");
+        log.info("Login page opened");
         return "login";
     }
 
@@ -59,11 +58,14 @@ public class UserController extends HttpServlet {
         try {
             user = userDao.isExist(pass.getPhone());
             if (user == null || !user.getPassword().equals(pass.getPassword())) {
+                log.info("Log in failure");
                 return new ResponseEntity<String>("Wrong phone or password!", HttpStatus.BAD_REQUEST);
             }
             session.setAttribute("user", user);
+            log.info("User log in!");
             return new ResponseEntity<String>(HttpStatus.ACCEPTED);
         } catch (Exception e) {
+            log.error("Log in was interrupted by error "+e.getStackTrace());
             return new ResponseEntity<String>("Internal error!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -91,15 +93,18 @@ public class UserController extends HttpServlet {
                 List<Relationship> inRequests = userService.getIncomeRequests(userId);
                 model.addAttribute("outRequests", outRequests);
                 model.addAttribute("inRequests", inRequests);
+                log.info("User enter personal page!");
                 return "personalProfile";
             }
 
         } catch (Exception e) {
+            log.error("Loading was interrupted by error: "+e.getStackTrace());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        log.info("User enter to page " +userId);
         return "profile";
     }
 
@@ -108,10 +113,12 @@ public class UserController extends HttpServlet {
         try {
             if (userService.registerUser(user) == null)
                 return new ResponseEntity<String>("Such user exist!", HttpStatus.CONFLICT);
+            log.info("User registered in system ");
             return new ResponseEntity<String>(HttpStatus.CREATED);
         } catch (NumberFormatException e) {
             return new ResponseEntity<>("Wrong phone number!", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            log.error("Registration was interrupted by error: "+e.getStackTrace());
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -159,12 +166,15 @@ public class UserController extends HttpServlet {
             User userClient = (User) session.getAttribute("user");
             if (userClient == null)
                 new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-            if (postService.addPost(message, url, userClient) == null)
+            Post post=postService.addPost(message, url, userClient);
+            if (post == null)
                 return new ResponseEntity<>("You have to be friends !", HttpStatus.NOT_ACCEPTABLE);
+            log.info("User " +userClient.getId()+" made a post on "+post.getUserPagePosted().getId()+" page");
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>("Links not allowed here!", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            log.error("Making post was interrupted by error: "+e.getStackTrace());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -200,9 +210,10 @@ public class UserController extends HttpServlet {
             posts = postService.getFriendsFeeds(userClient.getId());
             model.addAttribute("posts", posts);
         } catch (Exception e) {
+            log.error("Feeds was not loaded because of error "+e.getStackTrace());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
+        log.info("User " +userClient.getId()+" check his feeds ");
         return "feed";
 
     }
