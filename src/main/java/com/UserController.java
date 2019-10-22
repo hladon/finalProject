@@ -40,6 +40,7 @@ public class UserController extends HttpServlet {
     private Logger logger=Logger.getLogger(UserController.class);
     private org.apache.log4j.Logger log= org.apache.log4j.Logger.getLogger(UserController.class);
 
+
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String main() {
         return "index";

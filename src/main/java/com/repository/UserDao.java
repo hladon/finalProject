@@ -1,5 +1,6 @@
 package com.repository;
 
+import com.Exceptions.RepositoryException;
 import com.models.FriendshipStatus;
 import com.models.User;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,8 @@ public class UserDao extends DAO<User> {
         type=User.class;
     }
 
-    public User isExist(String phone){
+    public User isExist(String phone) throws RepositoryException{
+        try{
         List<User> users =entityManager.createNativeQuery("SELECT * FROM USER_PROFILE WHERE PHONE=?1",User.class)
                 .setParameter(1,phone)
                 .getResultList();
@@ -20,10 +22,14 @@ public class UserDao extends DAO<User> {
             return users.get(0);
         }
         return null;
+        }catch (Exception e){
+            throw new RepositoryException(e.getMessage());
+        }
     }
 
-    public List<User> getFriends(long id){
-        return entityManager.createNativeQuery("" +
+    public List<User> getFriends(long id) throws RepositoryException{
+        try {
+            return entityManager.createNativeQuery("" +
                 "SELECT USER_PROFILE.ID FROM USER_PROFILE JOIN RELATIONSHIP ON  USER_PROFILE.ID=RELATIONSHIP.ID_USER_FROM\n" +
                 "WHERE RELATIONSHIP.ID_USER_TO=?1 AND RELATES=?2 UNION\n" +
                 "SELECT USER_PROFILE.ID FROM USER_PROFILE JOIN RELATIONSHIP ON  USER_PROFILE.ID=RELATIONSHIP.ID_USER_TO\n" +
@@ -31,5 +37,8 @@ public class UserDao extends DAO<User> {
                 .setParameter(1,id)
                 .setParameter(2, FriendshipStatus.FRIEND.name())
                 .getResultList();
+        }catch (Exception e){
+            throw new RepositoryException(e.getMessage());
+        }
     }
 }

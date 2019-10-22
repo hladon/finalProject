@@ -1,5 +1,6 @@
 package com;
 
+import com.Exceptions.RepositoryException;
 import com.models.FriendshipStatus;
 import com.models.Post;
 import com.models.Relationship;
@@ -61,7 +62,7 @@ public class PostService {
 
     }
 
-    public List<Post> getFriendsFeeds(long id) {
+    public List<Post> getFriendsFeeds(long id) throws RepositoryException {
         List<Post> posts = postDao.getFriendsFeeds(id);
         return posts;
     }
