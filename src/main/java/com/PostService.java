@@ -1,6 +1,6 @@
 package com;
 
-import com.Exceptions.RepositoryException;
+import com.Exceptions.InternalServerError;
 import com.models.FriendshipStatus;
 import com.models.Post;
 import com.models.Relationship;
@@ -27,7 +27,6 @@ public class PostService {
     private UserDao userDao;
 
     public Post addPost(String message, String url, User userClient) throws Exception {
-
         url = url.replaceAll("\\D+", "");
         long pageId = Long.parseLong(url);
         if (checkLinks(message))
@@ -42,7 +41,6 @@ public class PostService {
         post.setDatePosted(new Date());
         post.setMessage(message);
         postDao.save(post);
-
         return post;
     }
 
@@ -62,7 +60,7 @@ public class PostService {
 
     }
 
-    public List<Post> getFriendsFeeds(long id) throws RepositoryException {
+    public List<Post> getFriendsFeeds(long id) throws InternalServerError {
         List<Post> posts = postDao.getFriendsFeeds(id);
         return posts;
     }

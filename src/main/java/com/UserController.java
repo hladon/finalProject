@@ -1,14 +1,12 @@
 package com;
 
 
+import com.Exceptions.NotAuthorized;
 import com.models.Password;
 import com.models.Post;
 import com.models.Relationship;
 import com.models.User;
 import com.repository.UserDao;
-import com.Exceptions.ExceedLimits;
-import org.hibernate.exception.ConstraintViolationException;
-import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-
 
 
 @Controller
@@ -37,8 +34,7 @@ public class UserController extends HttpServlet {
     private PostService postService;
 
 
-
-    private org.apache.log4j.Logger log= org.apache.log4j.Logger.getLogger(UserController.class);
+    private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(UserController.class);
 
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
@@ -53,130 +49,98 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) {
+    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception {
         User user = null;
-        try {
-            user = userDao.isExist(pass.getPhone());
-            if (user == null || !user.getPassword().equals(pass.getPassword())) {
-                log.info("Log in failure");
-                return new ResponseEntity<String>("Wrong phone or password!", HttpStatus.BAD_REQUEST);
-            }
-            session.setAttribute("user", user);
-            log.info("User log in!");
-            return new ResponseEntity<String>(HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            log.error("Log in was interrupted by error "+e.getStackTrace());
-            return new ResponseEntity<String>("Internal error!", HttpStatus.INTERNAL_SERVER_ERROR);
+        user = userDao.isExist(pass.getPhone());
+        if (user == null || !user.getPassword().equals(pass.getPassword())) {
+            log.info("Log in failure");
+            throw new NotAuthorized();
         }
+        session.setAttribute("user", user);
+        log.info("User log in!");
+        return new ResponseEntity<String>(HttpStatus.ACCEPTED);
+
     }
 
     @RequestMapping(path = "/user/{userId}", method = RequestMethod.GET)
-    public String profile(HttpSession session, Model model, @PathVariable long userId) {
+    public String profile(HttpSession session, Model model, @PathVariable long userId) throws Exception {
         User userClient = (User) session.getAttribute("user");
         if (userClient == null)
-            return "login";
+            throw new NotAuthorized();
         User user = null;
         Relationship rel = null;
         long id = userClient.getId();
-        try {
-            user = userDao.findById(userId);
-            model.addAttribute("user", user);
-            String postFilter = (String) session.getAttribute("userPosted");
-            List<Post> posts = postService.getPosts(postFilter, user, userId);
-            model.addAttribute("posts", posts);
-            if (id != userId) {
-                rel = userService.getRelationship(id, userId);
-                model.addAttribute("relationship", rel);
-                session.setAttribute("lastVisited", userId);
-            } else {
-                List<Relationship> outRequests = userService.getOutcomeRequests(userId);
-                List<Relationship> inRequests = userService.getIncomeRequests(userId);
-                model.addAttribute("outRequests", outRequests);
-                model.addAttribute("inRequests", inRequests);
-                log.info("User enter personal page!");
-                return "personalProfile";
-            }
-
-        } catch (Exception e) {
-            log.error("Loading was interrupted by error: "+e.getStackTrace());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        user = userDao.findById(userId);
+        model.addAttribute("user", user);
+        String postFilter = (String) session.getAttribute("userPosted");
+        List<Post> posts = postService.getPosts(postFilter, user, userId);
+        model.addAttribute("posts", posts);
+        if (id != userId) {
+            rel = userService.getRelationship(id, userId);
+            model.addAttribute("relationship", rel);
+            session.setAttribute("lastVisited", userId);
+        } else {
+            List<Relationship> outRequests = userService.getOutcomeRequests(userId);
+            List<Relationship> inRequests = userService.getIncomeRequests(userId);
+            model.addAttribute("outRequests", outRequests);
+            model.addAttribute("inRequests", inRequests);
+            log.info("User enter personal page!");
+            return "personalProfile";
         }
+
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        log.info("User enter to page " +userId);
+        log.info("User enter to page " + userId);
         return "profile";
     }
 
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
-    public ResponseEntity<String> registerUser(@ModelAttribute User user) {
-        try {
-            if (userService.registerUser(user) == null)
-                return new ResponseEntity<String>("Such user exist!", HttpStatus.CONFLICT);
-            log.info("User registered in system ");
-            return new ResponseEntity<String>(HttpStatus.CREATED);
-        } catch (NumberFormatException e) {
-            return new ResponseEntity<>("Wrong phone number!", HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            log.error("Registration was interrupted by error: "+e.getStackTrace());
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<String> registerUser(@ModelAttribute User user) throws Exception {
+        if (userService.registerUser(user) == null)
+            return new ResponseEntity<String>("Such user exist!", HttpStatus.CONFLICT);
+        log.info("User registered in system ");
+        return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/addRelationship", method = RequestMethod.GET)
-    public ResponseEntity<String> addRelationship(HttpSession session) {
-        try {
-            User userClient = (User) session.getAttribute("user");
-            if (userClient == null)
-                new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-            long userIdTo = (Long) session.getAttribute("lastVisited");
-            long userIdFrom = userClient.getId();
-            userService.addRelationship(userIdFrom, userIdTo);
-            return new ResponseEntity<String>(HttpStatus.CREATED);
-        } catch (ConstraintViolationException | NumberFormatException cve) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (ExceedLimits e) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        } catch (Exception e) {
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<String> addRelationship(HttpSession session) throws Exception {
+
+        User userClient = (User) session.getAttribute("user");
+        if (userClient == null)
+            throw new NotAuthorized();
+        long userIdTo = (Long) session.getAttribute("lastVisited");
+        long userIdFrom = userClient.getId();
+        userService.addRelationship(userIdFrom, userIdTo);
+        return new ResponseEntity<String>(HttpStatus.CREATED);
+
     }
 
     @RequestMapping(path = "/updateRelationship", method = RequestMethod.GET)
-    public ResponseEntity<String> updateRelationship(HttpSession session, @RequestParam String userIdTo, @RequestParam String status) {
-        try {
-            User userClient = (User) session.getAttribute("user");
-            if (userClient == null)
-                new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-            long userIdFrom = userClient.getId();
-            userService.updateRelationship(userIdFrom, userIdTo, status);
-            return new ResponseEntity<String>(HttpStatus.CREATED);
-        } catch (ConstraintViolationException | IllegalArgumentException ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (ExceedLimits e) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        } catch (Exception e) {
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<String> updateRelationship(HttpSession session,
+                                                     @RequestParam String userIdTo,
+                                                     @RequestParam String status) throws Exception {
+
+        User userClient = (User) session.getAttribute("user");
+        if (userClient == null)
+            throw new NotAuthorized();
+        long userIdFrom = userClient.getId();
+        userService.updateRelationship(userIdFrom, userIdTo, status);
+        return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/addPost", method = RequestMethod.POST)
-    public ResponseEntity<String> addPost(HttpSession session, @RequestParam String message, @RequestParam String url) {
-        try {
-            User userClient = (User) session.getAttribute("user");
-            if (userClient == null)
-                new ResponseEntity<String>(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
-            Post post=postService.addPost(message, url, userClient);
-            if (post == null)
-                return new ResponseEntity<>("You have to be friends !", HttpStatus.NOT_ACCEPTABLE);
-            log.info("User " +userClient.getId()+" made a post on "+post.getUserPagePosted().getId()+" page");
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>("Links not allowed here!", HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            log.error("Making post was interrupted by error: "+e.getStackTrace());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<String> addPost(HttpSession session, @RequestParam String message,
+                                          @RequestParam String url) throws Exception {
+        User userClient = (User) session.getAttribute("user");
+        if (userClient == null)
+            throw new NotAuthorized();
+        Post post = postService.addPost(message, url, userClient);
+        if (post == null)
+            return new ResponseEntity<>("You have to be friends !", HttpStatus.NOT_ACCEPTABLE);
+        log.info("User " + userClient.getId() + " made a post on " + post.getUserPagePosted().getId() + " page");
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
 
     }
 
@@ -201,19 +165,15 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/user/feed", method = RequestMethod.GET)
-    public String getFeed(HttpSession session, Model model) {
+    public String getFeed(HttpSession session, Model model) throws Exception {
         User userClient = (User) session.getAttribute("user");
         if (userClient == null)
-            return "login";
+            throw new NotAuthorized();
         List<Post> posts;
-        try {
-            posts = postService.getFriendsFeeds(userClient.getId());
-            model.addAttribute("posts", posts);
-        } catch (Exception e) {
-            log.error("Feeds was not loaded because of error "+e.getStackTrace());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        log.info("User " +userClient.getId()+" check his feeds ");
+        posts = postService.getFriendsFeeds(userClient.getId());
+        model.addAttribute("posts", posts);
+
+        log.info("User " + userClient.getId() + " check his feeds ");
         return "feed";
 
     }

@@ -1,7 +1,6 @@
 package com;
 
-import com.Exceptions.ExceedLimits;
-import com.Exceptions.RepositoryException;
+import com.Exceptions.InternalServerError;
 import com.models.FriendshipStatus;
 import com.models.Relationship;
 import com.models.User;
@@ -55,16 +54,16 @@ public class UserService {
         return relationship;
     }
 
-    public List<Relationship> getIncomeRequests(long userId) throws RepositoryException {
+    public List<Relationship> getIncomeRequests(long userId) throws InternalServerError {
         return relationshipDAO.getIncomeRequests(userId);
     }
 
-    public List<Relationship> getOutcomeRequests(long userId) throws RepositoryException {
+    public List<Relationship> getOutcomeRequests(long userId) throws InternalServerError {
         return relationshipDAO.getOutcomeRequests(userId);
     }
 
 
-    public Relationship getRelationship(long idFrom, long idTo) throws RepositoryException {
+    public Relationship getRelationship(long idFrom, long idTo) throws InternalServerError {
         Relationship relate = relationshipDAO.getRelationship(idFrom, idTo);
         if (relate == null) {
             relate = new Relationship();

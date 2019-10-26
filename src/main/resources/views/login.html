@@ -19,8 +19,7 @@
             type:"POST",
             data:$('#login-form').serialize(),
             success: function success (id){
-                var urlLink="user/"+id;
-                $.get(urlLink)},
+                alert('You are log in!');
             error:function error (xhr){
                 alert(xhr.responseText);
             }
