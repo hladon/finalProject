@@ -20,16 +20,19 @@ public class HandlerForExceptios {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
     @ExceptionHandler({IllegalArgumentException.class, ConstraintViolationException.class})
-    public void wrongInput(Exception e) {
-        log.error("Function was interrupted by wrong input " + e.getStackTrace());
+    public ModelAndView wrongInput(Exception e) {
+        log.error("Function was interrupted by wrong input " , e);
+        ModelAndView model=new ModelAndView("error");
+        model.addObject("Exception",e);
+        return model;
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InternalServerError.class)
     public void internalError(Exception e) {
-        log.error("Repository exception " + e.getStackTrace());
+        log.error("Repository exception ",e);
     }
 
     @ExceptionHandler(NotAuthorized.class)
@@ -41,6 +44,6 @@ public class HandlerForExceptios {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void generalException(Exception e) {
-        log.error("Function was interrupted by error " + e.getStackTrace());
+        log.error("Function was interrupted by error ",e);
     }
 }

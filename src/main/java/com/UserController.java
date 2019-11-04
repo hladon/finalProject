@@ -148,13 +148,10 @@ public class UserController extends HttpServlet {
     public ResponseEntity<String> addPostFilter(HttpSession session, @RequestParam String postedId) {
         if (postedId == null)
             return new ResponseEntity<String>("First select user ID", HttpStatus.BAD_REQUEST);
-        try {
-            Long user = Long.parseLong(postedId);
-            session.setAttribute("userPosted", user);
-            return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Enter Id", HttpStatus.BAD_REQUEST);
-        }
+        Long user = Long.parseLong(postedId);
+        session.setAttribute("userPosted", user);
+        return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
+
 
     }
 
@@ -172,7 +169,6 @@ public class UserController extends HttpServlet {
         List<Post> posts;
         posts = postService.getFriendsFeeds(userClient.getId());
         model.addAttribute("posts", posts);
-
         log.info("User " + userClient.getId() + " check his feeds ");
         return "feed";
 

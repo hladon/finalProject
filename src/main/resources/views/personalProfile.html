@@ -117,7 +117,7 @@
             error:function error (xhr){
                 alert(xhr.responseText);
             }
-    }
+    });
 
 
     $("#post-form").submit(function(){
@@ -132,7 +132,7 @@
                 alert(xhr.responseText);
             }
         });
-    });
+    })
     $("#postId-form").submit(function(){
         event.preventDefault();
         $.ajax({
@@ -145,7 +145,7 @@
                 alert(xhr.responseText);
             }
         });
-    });
+    })
 
 
 </script>

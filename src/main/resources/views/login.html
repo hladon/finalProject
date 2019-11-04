@@ -5,26 +5,28 @@
     <title>Title</title>
 </head>
 <body>
-<form id="login-form" >
+<form id="login-form">
     <p>Phone <input name="phone" required></p>
     <p>Password <input name="password" required></p>
-    <p>  <input type="submit" value="login"></p>
+    <p><input type="submit" value="login"></p>
 </form>
-<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script language="JavaScript" type="text/javascript"
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script language="JavaScript" type="text/javascript">
-    $("#login-form").submit(function(){
+    $("#login-form").submit(function () {
         event.preventDefault();
         $.ajax({
-            url:"login",
-            type:"POST",
-            data:$('#login-form').serialize(),
-            success: function success (id){
+            url: "login",
+            type: "POST",
+            data: $('#login-form').serialize(),
+            success: function success(id) {
                 alert('You are log in!');
-            error:function error (xhr){
-                alert(xhr.responseText);
+                error:function error(xhr) {
+                    alert("Wrong phone or password");
+                }
             }
-        });
-    });
+        })
+    })
 
 </script>
 </body>
