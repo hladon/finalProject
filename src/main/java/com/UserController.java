@@ -49,19 +49,19 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) {
-        try{
+    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception{
+        try {
             User user = null;
             user = userDao.isExist(pass.getPhone());
             if (user == null || !user.getPassword().equals(pass.getPassword())) {
                 log.info("Log in failure");
-                throw new NotAuthorized();
+                return new ResponseEntity<String>( "Wrong phone or password",HttpStatus.NOT_FOUND);
             }
             session.setAttribute("user", user);
             log.info("User log in!");
             return new ResponseEntity<String>(HttpStatus.ACCEPTED);
-        }catch (NumberFormatException){
-            return
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Server Error");
         }
 
 
@@ -99,14 +99,17 @@ public class UserController extends HttpServlet {
         log.info("User enter to page " + userId);
         return "profile";
     }
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@ModelAttribute User user) throws Exception {
-        if (userService.registerUser(user) == null)
-            return new ResponseEntity<String>("Such user exist!", HttpStatus.CONFLICT);
-        log.info("User registered in system ");
-        return new ResponseEntity<String>(HttpStatus.CREATED);
+        try {
+            if (userService.registerUser(user) == null)
+                return new ResponseEntity<String>("Such user exist!", HttpStatus.CONFLICT);
+            log.info("User registered in system ");
+            return new ResponseEntity<String>(HttpStatus.CREATED);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error!");
+        }
     }
 
     @RequestMapping(path = "/addRelationship", method = RequestMethod.GET)

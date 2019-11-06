@@ -20,12 +20,13 @@
             type: "POST",
             data: $('#login-form').serialize(),
             success: function success(id) {
-                alert('You are log in!');
+                alert('You are log in!')},
+
                 error:function error(xhr) {
                     alert("Wrong phone or password");
                 }
             }
-        })
+        )
     })
 
 </script>
