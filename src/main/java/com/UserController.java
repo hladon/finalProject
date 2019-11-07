@@ -49,19 +49,20 @@ public class UserController extends HttpServlet {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception{
+    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception {
         try {
             User user = null;
             user = userDao.isExist(pass.getPhone());
             if (user == null || !user.getPassword().equals(pass.getPassword())) {
                 log.info("Log in failure");
-                return new ResponseEntity<String>( "Wrong phone or password",HttpStatus.NOT_FOUND);
+                return new ResponseEntity<String>("Wrong phone or password", HttpStatus.NOT_FOUND);
             }
             session.setAttribute("user", user);
             log.info("User log in!");
             return new ResponseEntity<String>(HttpStatus.ACCEPTED);
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Server Error");
+        } catch (Exception e) {
+            log.error("Internal server error during log in" + e);
+            return new ResponseEntity<String>("Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
@@ -108,13 +109,13 @@ public class UserController extends HttpServlet {
             log.info("User registered in system ");
             return new ResponseEntity<String>(HttpStatus.CREATED);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server error!");
+            log.error("Internal server error during user registration" + e);
+            return new ResponseEntity<String>("Server error!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(path = "/addRelationship", method = RequestMethod.GET)
     public ResponseEntity<String> addRelationship(HttpSession session) throws Exception {
-
         User userClient = (User) session.getAttribute("user");
         if (userClient == null)
             throw new NotAuthorized();
@@ -122,7 +123,6 @@ public class UserController extends HttpServlet {
         long userIdFrom = userClient.getId();
         userService.addRelationship(userIdFrom, userIdTo);
         return new ResponseEntity<String>(HttpStatus.CREATED);
-
     }
 
     @RequestMapping(path = "/updateRelationship", method = RequestMethod.GET)
@@ -141,33 +141,48 @@ public class UserController extends HttpServlet {
     @RequestMapping(path = "/addPost", method = RequestMethod.POST)
     public ResponseEntity<String> addPost(HttpSession session, @RequestParam String message,
                                           @RequestParam String url) throws Exception {
-        User userClient = (User) session.getAttribute("user");
-        if (userClient == null)
-            throw new NotAuthorized();
-        Post post = postService.addPost(message, url, userClient);
-        if (post == null)
-            return new ResponseEntity<>("You have to be friends !", HttpStatus.NOT_ACCEPTABLE);
-        log.info("User " + userClient.getId() + " made a post on " + post.getUserPagePosted().getId() + " page");
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-
+        try {
+            User userClient = (User) session.getAttribute("user");
+            if (userClient == null)
+                return new ResponseEntity<>("You have to be friends !", HttpStatus.NOT_ACCEPTABLE);
+            Post post = postService.addPost(message, url, userClient);
+            if (post == null)
+                return new ResponseEntity<>("Post warn`t created", HttpStatus.NOT_ACCEPTABLE);
+            log.info("User " + userClient.getId() + " made a post on " + post.getUserPagePosted().getId() + " page");
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            log.error("Internal server error during adding post" + e);
+            return new ResponseEntity<String>("Server error!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 
     @RequestMapping(path = "/addPostId", method = RequestMethod.GET)
     public ResponseEntity<String> addPostFilter(HttpSession session, @RequestParam String postedId) {
-        if (postedId == null)
-            return new ResponseEntity<String>("First select user ID", HttpStatus.BAD_REQUEST);
-        Long user = Long.parseLong(postedId);
-        session.setAttribute("userPosted", user);
-        return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
-
+        try {
+            if (postedId == null)
+                return new ResponseEntity<String>("First select user ID", HttpStatus.BAD_REQUEST);
+            Long user = Long.parseLong(postedId);
+            session.setAttribute("userPosted", user);
+            return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<String>("It have to be number", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Internal server error during adding post Id" + e);
+            return new ResponseEntity<String>("Server error!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 
     @RequestMapping(path = "/addPostFilter", method = RequestMethod.GET)
     public ResponseEntity<String> addFilter(HttpSession session, @RequestParam String filter) {
-        session.setAttribute("userPosted", filter);
-        return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
+        try {
+            session.setAttribute("userPosted", filter);
+            return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            log.error("Internal server error during adding post Id" + e);
+            return new ResponseEntity<String>("Server error!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(path = "/user/feed", method = RequestMethod.GET)
