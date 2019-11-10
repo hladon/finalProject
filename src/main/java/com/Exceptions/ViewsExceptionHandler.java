@@ -1,14 +1,14 @@
 package com.Exceptions;
 
-import com.UserController;
+import com.ViewsController;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-@ControllerAdvice
-public class HandlerForExceptios {
+@ControllerAdvice(assignableTypes = ViewsController.class)
+public class ViewsExceptionHandler {
 
-    private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(UserController.class);
+    private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ViewsController.class);
 
     @ExceptionHandler({Exception.class})
     public ModelAndView wrongInput(Exception e) {

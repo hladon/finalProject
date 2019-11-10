@@ -23,7 +23,7 @@
                 alert('You are log in!')},
 
                 error:function error(xhr) {
-                    alert("Wrong phone or password");
+                    alert(xhr.responseText);
                 }
             }
         )
