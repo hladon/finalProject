@@ -1,8 +1,6 @@
-package com.validators;
+package com;
 
 import com.Exceptions.NotAuthorized;
-import com.PostService;
-import com.UserService;
 import com.models.Password;
 import com.models.Post;
 import com.models.User;

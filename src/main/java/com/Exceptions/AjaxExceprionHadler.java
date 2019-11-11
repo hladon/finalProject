@@ -1,6 +1,6 @@
 package com.Exceptions;
 
-import com.validators.AjaxController;
+import com.AjaxController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
