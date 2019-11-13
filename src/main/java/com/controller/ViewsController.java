@@ -1,4 +1,4 @@
-package com;
+package com.controller;
 
 
 import com.Exceptions.NotAuthorized;
@@ -6,6 +6,8 @@ import com.models.Post;
 import com.models.Relationship;
 import com.models.User;
 import com.repository.UserDao;
+import com.service.PostService;
+import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;

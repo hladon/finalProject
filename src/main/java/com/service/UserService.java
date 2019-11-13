@@ -1,4 +1,4 @@
-package com;
+package com.service;
 
 import com.Exceptions.InternalServerError;
 import com.models.FriendshipStatus;
