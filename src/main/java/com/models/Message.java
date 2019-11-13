@@ -8,7 +8,9 @@ import java.util.Date;
 public class Message {
     private Long id;
     private String text;
-    private Date dateSend;
+    private Date dateSent;
+    private Date dateEdited;
+    private Date dateDeleted;
     private Date dateRead;
     private User userFrom;
     private User userTo;
@@ -19,25 +21,40 @@ public class Message {
     public Long getId() {
         return id;
     }
-    @Column( name = "TEXT")
+
+    @Column(name = "TEXT")
     public String getText() {
         return text;
     }
-    @Column( name = "DATE_SEND")
-    public Date getDateSend() {
-        return dateSend;
+
+    @Column(name = "DATE_SEND")
+    public Date getDateSent() {
+        return dateSent;
     }
-    @Column( name = "DATE_READ")
+
+    @Column(name = "DATE_EDITED")
+    public Date getDateEdited() {
+        return dateEdited;
+    }
+
+    @Column(name = "DATE_DELETED")
+    public Date getDateDeleted() {
+        return dateDeleted;
+    }
+
+    @Column(name = "DATE_READ")
     public Date getDateRead() {
         return dateRead;
     }
+
     @ManyToOne
-    @JoinColumn(name = "USER_FROM",nullable = false)
+    @JoinColumn(name = "USER_FROM", nullable = false)
     public User getUserFrom() {
         return userFrom;
     }
+
     @ManyToOne
-    @JoinColumn(name = "USER_TO",nullable = false)
+    @JoinColumn(name = "USER_TO", nullable = false)
     public User getUserTo() {
         return userTo;
     }
@@ -50,8 +67,16 @@ public class Message {
         this.text = text;
     }
 
-    public void setDateSend(Date dateSend) {
-        this.dateSend = dateSend;
+    public void setDateSent(Date dateSend) {
+        this.dateSent = dateSend;
+    }
+
+    public void setDateEdited(Date dateEdited) {
+        this.dateEdited = dateEdited;
+    }
+
+    public void setDateDeleted(Date dateDeleted) {
+        this.dateDeleted = dateDeleted;
     }
 
     public void setDateRead(Date dateRead) {
