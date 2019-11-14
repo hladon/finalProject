@@ -1,5 +1,7 @@
 package com.models;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -21,7 +23,7 @@ public class Message {
     public Long getId() {
         return id;
     }
-
+    
     @Column(name = "TEXT")
     public String getText() {
         return text;
