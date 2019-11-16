@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
 @Controller
+//TODO why so strange names??
 public class postRestController extends HttpServlet {
 
     @Autowired

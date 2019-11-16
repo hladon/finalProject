@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
 @RestController
+//TODO bad naming + should be splitted on different repos
 public class AjaxController extends HttpServlet {
 
 
@@ -48,6 +49,8 @@ public class AjaxController extends HttpServlet {
         if (userService.registerUser(user) == null)
             return new ResponseEntity<String>("Such user exist!", HttpStatus.CONFLICT);
         log.info("User registered in system ");
+
+        //TODO here can be the case - bad request as well, not handled
         return new ResponseEntity<String>(HttpStatus.CREATED);
 
     }

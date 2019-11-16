@@ -26,6 +26,7 @@ public class UserService {
         checkPhone(user.getPhone());
         user.setDateRegistered(new Date());
         if (userDao.isExist(user.getPhone()) == null) {
+            //TODO why do you need this variable?
             User newUser = userDao.save(user);
             return newUser;
         } else {
@@ -73,6 +74,7 @@ public class UserService {
         return relate;
     }
 
+    //TODO should be refactored
     private boolean checkPhone(String phone) throws Exception {
         if (phone == null || phone.length() < 8)
             throw new NumberFormatException();
