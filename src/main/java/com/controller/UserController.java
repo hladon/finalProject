@@ -68,7 +68,6 @@ public class UserController extends HttpServlet {
             List<Relationship> inRequests = userService.getIncomeRequests(userId);
             model.addAttribute("outRequests", outRequests);
             model.addAttribute("inRequests", inRequests);
-            log.info("User enter personal page!");
             return "personalProfile";
         }
 

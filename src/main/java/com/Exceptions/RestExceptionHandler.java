@@ -28,6 +28,6 @@ public class RestExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> inputException(Exception e) {
         log.error("Wrong input ");
-        return new ResponseEntity<String>("It have to be number", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<String>("It have to be a number", HttpStatus.BAD_REQUEST);
     }
 }

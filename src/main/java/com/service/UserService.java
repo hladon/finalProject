@@ -75,7 +75,7 @@ public class UserService {
     private boolean checkPhone(String phone) throws Exception {
         if (phone == null || phone.length() < 8)
             throw new NumberFormatException();
-        Long.parseLong(phone);
+        Long.parseLong(phone.substring(1));
         return true;
     }
 
