@@ -26,8 +26,7 @@ public class UserService {
         checkPhone(user.getPhone());
         user.setDateRegistered(new Date());
         if (userDao.isExist(user.getPhone()) == null) {
-            User newUser = userDao.save(user);
-            return newUser;
+            return userDao.save(user);
         } else {
             return null;
         }
@@ -76,7 +75,7 @@ public class UserService {
     private boolean checkPhone(String phone) throws Exception {
         if (phone == null || phone.length() < 8)
             throw new NumberFormatException();
-        long d = Long.parseLong(phone);
+        Long.parseLong(phone);
         return true;
     }
 
