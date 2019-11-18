@@ -1,27 +1,26 @@
 package com.restController;
 
-import com.controller.ViewsController;
 import com.models.Post;
 import com.models.User;
 import com.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
-@Controller
-public class postRestController extends HttpServlet {
+@RestController
+public class PostRestController extends HttpServlet {
 
     @Autowired
     private PostService postService;
 
-    private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ViewsController.class);
+    private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PostRestController.class);
 
     @RequestMapping(path = "/addPost", method = RequestMethod.POST)
     public ResponseEntity<String> addPost(HttpSession session, @RequestParam String message,

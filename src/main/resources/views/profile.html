@@ -8,11 +8,16 @@
 <div>
     <div class="left">
         <h1>Photo</h1>
-        <div>
-            <button >Send message</button>
+        <button class="btn" onclick="openForm()">Send message</button>
+        <div class="form-popup" id="form-popup">
+            <form  id="message">
+                <h1>Send message</h1>
+                <input type="hidden" id="hiddenUrl" name="url" data-name="url" value="">
+                <textarea rows="5" cols="40" type="text"  name="text" data-name="text" required maxlength="140"></textarea>
+                <button type="submit" >Send</button>
+            </form>
         </div>
     </div>
-
     <div class="right">
         <p th:text="${user.firstName}"></p>
         <p th:text="${user.city}"></p>
@@ -20,95 +25,129 @@
     <div class="right" id="relationship-status">
         <p th:text="${relationship?.relates}"></p>
     </div>
+
 </div>
 <div>
     <h2>Make a post</h2>
     <form id="post-form">
-        <input type="hidden" id="hiddenUrl" name="url" data-name="url" value="">
-         <textarea rows="5" cols="40" name="message" data-name="message" required></textarea>
-        <p>  <input type="submit" value="post"></p>
+        <input type="hidden" class="hiddenUrl" id="hiddenUrl2" name="url" data-name="url"  value="">
+        <textarea rows="5" cols="40" name="message" data-name="message" required></textarea>
+        <p><input type="submit" value="post"></p>
     </form>
 </div>
 <div>
-    <form id="postId-form">
-        <input  id="postedId" name="postedId" value="" >
-        <input type="submit" id="thisId" value="Only this user">
-    </form>
-    <form id="post_filter">
-        <input type="submit" id="USER_ID" onclick="sendFilter(this.id)" value="Yours post">
-        <input type="submit" id="OWNER_ID" onclick="sendFilter(this.id)" value="Page owner">
-        <input type="submit" id="ALL_ID" onclick="sendFilter(this.id)" value="All">
-    </form>
-</div>
-<div>
-    <table>
-        <tbody>
-        <tr th:each="post : ${posts}">
-            <td><span th:text="${post.message}"> ID User </span></td>
-            <td><span th:text="${post.datePosted}"> Request </span></td>
+    <div>
+        <form id="postId-form">
+            <input id="postedId" name="postedId"  value="">
+            <input type="submit" id="thisId" value="Only this user">
+        </form>
+        <form id="post_filter">
+            <input type="submit" id="USER_ID" onclick="sendFilter(this.id)" value="Yours post">
+            <input type="submit" id="OWNER_ID" onclick="sendFilter(this.id)" value="Page owner">
+            <input type="submit" id="ALL_ID" onclick="sendFilter(this.id)" value="All">
+        </form>
+    </div>
+    <div>
+        <table>
+            <tbody>
+            <tr th:each="post : ${posts}">
+                <td><span th:text="${post.message}"> ID User </span></td>
+                <td><span th:text="${post.datePosted}"> Request </span></td>
 
-        </tr>
-        </tbody>
-    </table>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 <style>
-    .left{
-        float:left;
+    .left {
+        float: left;
         width: 200px;
         height: 300px;
         border-style: solid;
         border-width: 1px;
     }
-    .right{
+
+    .right {
         margin-left: 380px;
     }
-    .btn{
+
+    .btn {
         margin-top: 220px;
     }
+    .form-popup {
+        display: none;
+        position: fixed;
+        left: 5px;
+        border: 3px solid #8af195;
+        z-index: 9;
+        bottom: 0;
+    }
 </style>
-<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script language="JavaScript" type="text/javascript"
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script language="JavaScript" type="text/javascript">
-    document.getElementById('hiddenUrl').value = location.pathname;
+    document.getElementById('hiddenUrl').value =location.pathname.substring(location.pathname.lastIndexOf('/') + 1) ;
+    document.getElementById('hiddenUrl2').value =location.pathname.substring(location.pathname.lastIndexOf('/') + 1) ;
+    function openForm() {
+        document.getElementById("form-popup").style.display = "block";
+    }
 
-
-
-    function sendFilter(value){
-     event.preventDefault();
-        $.ajax({
-            url:"http://localhost:8081/addPostFilter",
-            type:"GET",
-            data:"filter="+value,
-            success: function success (){
-                alert('Reload your page!');},
-            error:function error (xhr){
-                alert(xhr.responseText);
-            }
-    });
-    };
-
-    $("#post-form").submit(function(){
+    function sendFilter(value) {
         event.preventDefault();
         $.ajax({
-            url:"http://localhost:8081/addPost",
-            type:"POST",
-            data:$('#post-form').serialize(),
-            success: function success (){
-                alert('You add a post!');},
-            error:function error (xhr){
+            url: "http://localhost:8081/addPostFilter",
+            type: "GET",
+            data: "filter=" + value,
+            success: function success() {
+                alert('Reload your page!');
+            },
+            error: function error(xhr) {
+                alert(xhr.responseText);
+            }
+        });
+    };
+
+    $("#post-form").submit(function () {
+        event.preventDefault();
+        $.ajax({
+            url: "http://localhost:8081/addPost",
+            type: "POST",
+            data: $('#post-form').serialize(),
+            success: function success() {
+                alert('You add a post!');
+            },
+            error: function error(xhr) {
                 alert(xhr.responseText);
             }
         });
     });
-    $("#postId-form").submit(function(){
+    $("#postId-form").submit(function () {
         event.preventDefault();
         $.ajax({
-            url:"http://localhost:8081/addPostId",
-            type:"GET",
-            data:$('#postId-form').serialize(),
-            success: function success (){
-                alert('Reload your page!');},
-            error:function error (xhr){
+            url: "http://localhost:8081/addPostId",
+            type: "GET",
+            data: $('#postId-form').serialize(),
+            success: function success() {
+                alert('Reload your page!');
+            },
+            error: function error(xhr) {
+                alert(xhr.responseText);
+            }
+        });
+    });
+
+    $("#message").submit(function () {
+        event.preventDefault();
+        $.ajax({
+            url: "http://localhost:8081/message",
+            type: "POST",
+            data: $('#message').serialize(),
+            success: function success() {
+                document.getElementById("message").style.display = "none";
+            },
+            error: function error(xhr) {
                 alert(xhr.responseText);
             }
         });

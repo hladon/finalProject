@@ -1,6 +1,5 @@
 package com.controller;
 
-
 import com.Exceptions.NotAuthorized;
 import com.models.Post;
 import com.models.Relationship;
@@ -12,18 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.server.ResponseStatusException;
-
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-
 @Controller
-public class ViewsController extends HttpServlet {
-
+public class UserController extends HttpServlet {
     @Autowired
     private UserDao userDao;
 
@@ -34,7 +32,7 @@ public class ViewsController extends HttpServlet {
     private PostService postService;
 
 
-    private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ViewsController.class);
+    private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(UserController.class);
 
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
@@ -80,19 +78,4 @@ public class ViewsController extends HttpServlet {
         log.info("User enter to page " + userId);
         return "profile";
     }
-
-    @RequestMapping(path = "/user/feed", method = RequestMethod.GET)
-    public String getFeed(HttpSession session, Model model) throws Exception {
-        User userClient = (User) session.getAttribute("user");
-        if (userClient == null)
-            throw new NotAuthorized();
-        List<Post> posts;
-        posts = postService.getFriendsFeeds(userClient.getId());
-        model.addAttribute("posts", posts);
-        log.info("User " + userClient.getId() + " check his feeds ");
-        return "feed";
-
-    }
-
-
 }
