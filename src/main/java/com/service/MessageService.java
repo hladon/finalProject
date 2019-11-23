@@ -26,11 +26,13 @@ public class MessageService {
     public Message sendMessage(Message message, Long idFrom, Long idTo) throws Exception {
         if (message.getText().length() > 140 )
             throw new ExceedLimits();
+        //TODO you shouldn't get all relationship , it is a lot of info. just true is friends can be returned
         if (!relationshipDAO.getRelationship(idFrom, idTo).getRelates().equals(FriendshipStatus.FRIEND))
             throw new NotFriend();
         Date date = new Date();
         message.setDateEdited(date);
         message.setDateSent(date);
+        //TODO thid call to db is redundant, user is in sessions
         message.setUserFrom(userDao.findById(idFrom));
         message.setUserTo(userDao.findById(idTo));
         messageDAO.save(message);

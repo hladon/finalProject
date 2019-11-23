@@ -51,27 +51,27 @@ public class UserController extends HttpServlet {
         User userClient = (User) session.getAttribute("user");
         if (userClient == null)
             throw new NotAuthorized();
-        User user = null;
-        Relationship rel = null;
+        User user;
+
         long id = userClient.getId();
         user = userDao.findById(userId);
         model.addAttribute("user", user);
+
+        //TODO look like a bad ides to store userPosted in session
         String postFilter = (String) session.getAttribute("userPosted");
         List<Post> posts = postService.getPosts(postFilter, user, userId);
         model.addAttribute("posts", posts);
         if (id != userId) {
-            rel = userService.getRelationship(id, userId);
-            model.addAttribute("relationship", rel);
+            model.addAttribute("relationship", userService.getRelationship(id, userId));
             session.setAttribute("lastVisited", userId);
         } else {
-            List<Relationship> outRequests = userService.getOutcomeRequests(userId);
-            List<Relationship> inRequests = userService.getIncomeRequests(userId);
-            model.addAttribute("outRequests", outRequests);
-            model.addAttribute("inRequests", inRequests);
+            model.addAttribute("outRequests", userService.getOutcomeRequests(userId));
+            model.addAttribute("inRequests", userService.getIncomeRequests(userId));
             return "personalProfile";
         }
 
         if (user == null) {
+            //TODO you should show page , not response status
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         log.info("User enter to page " + userId);
