@@ -1,6 +1,8 @@
 package com.service;
 
 import com.Exceptions.ExceedLimits;
+import com.Exceptions.NotAuthorized;
+import com.Exceptions.NotFriend;
 import com.models.FriendshipStatus;
 import com.models.Message;
 import com.repository.MessageDAO;
@@ -21,12 +23,12 @@ public class MessageService {
     @Autowired
     private RelationshipDAO relationshipDAO;
 
-    public Message sendMessage(String text, Long idFrom, Long idTo) throws Exception {
-        Message message = new Message();
-        if (text.length() > 140 || !relationshipDAO.getRelationship(idFrom, idTo).getRelates().equals(FriendshipStatus.FRIEND))
+    public Message sendMessage(Message message, Long idFrom, Long idTo) throws Exception {
+        if (message.getText().length() > 140 )
             throw new ExceedLimits();
+        if (!relationshipDAO.getRelationship(idFrom, idTo).getRelates().equals(FriendshipStatus.FRIEND))
+            throw new NotFriend();
         Date date = new Date();
-        message.setText(text);
         message.setDateEdited(date);
         message.setDateSent(date);
         message.setUserFrom(userDao.findById(idFrom));
