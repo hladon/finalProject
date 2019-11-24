@@ -1,7 +1,6 @@
 package com.service;
 
 import com.Exceptions.ExceedLimits;
-import com.Exceptions.NotAuthorized;
 import com.Exceptions.NotFriend;
 import com.models.FriendshipStatus;
 import com.models.Message;

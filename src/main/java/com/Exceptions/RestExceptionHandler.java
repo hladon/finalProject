@@ -13,6 +13,12 @@ public class RestExceptionHandler {
 
     private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(RestExceptionHandler.class);
 
+    @ExceptionHandler(InternalError.class)
+    public ResponseEntity<String> internalException(Exception e){
+        log.error("Database error:  " + e);
+        return new ResponseEntity<String>("Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> allExceptions(Exception e) {
         log.error("Internal server error " + e);
@@ -29,5 +35,16 @@ public class RestExceptionHandler {
     public ResponseEntity<String> inputException(Exception e) {
         log.error("Wrong input ");
         return new ResponseEntity<String>("It have to be a number", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExceedLimits.class)
+    public ResponseEntity<String> exceedLimits(Exception e){
+        log.error("User exceed limits");
+        return new ResponseEntity<String>("Such action forbiden because of limits",HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFriend.class)
+    public ResponseEntity<String> notFriends(Exception e){
+        return new ResponseEntity<String>("You have to be friends first!",HttpStatus.BAD_REQUEST);
     }
 }
