@@ -14,6 +14,8 @@ public class ViewsExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ModelAndView wrongInput(Exception e) {
         log.error("Function was interrupted by wrong input ", e);
+        //TODO error is bad naming for page
+        //TODO 400error, 500error, 404error pages can be created
         ModelAndView model = new ModelAndView("error");
         model.addObject("Exception", e);
         return model;
