@@ -1,8 +1,10 @@
 package com.service;
 
 import com.Exceptions.ExceedLimits;
+import com.Exceptions.NotFriend;
 import com.models.FriendshipStatus;
 import com.models.Message;
+import com.models.User;
 import com.repository.MessageDAO;
 import com.repository.RelationshipDAO;
 import com.repository.UserDao;
@@ -21,15 +23,18 @@ public class MessageService {
     @Autowired
     private RelationshipDAO relationshipDAO;
 
-    public Message sendMessage(String text, Long idFrom, Long idTo) throws Exception {
-        Message message = new Message();
-        if (text.length() > 140 || !FriendshipStatus.FRIEND.equals(relationshipDAO.getRelationship(idFrom, idTo).getRelates()))
+
+
+    public Message sendMessage(Message message, User user, Long idTo) throws Exception {
+        if (message.getText().length() > 140 )
             throw new ExceedLimits();
+        //TODO you shouldn't get all relationship , it is a lot of info. just true is friends can be returned
+        if (!relationshipDAO.getRelationship(user.getId(), idTo).getRelates().equals(FriendshipStatus.FRIEND))
+            throw new NotFriend();
         Date date = new Date();
-        message.setText(text);
         message.setDateEdited(date);
         message.setDateSent(date);
-        message.setUserFrom(userDao.findById(idFrom));
+        message.setUserFrom(user);
         message.setUserTo(userDao.findById(idTo));
         messageDAO.save(message);
         return message;
