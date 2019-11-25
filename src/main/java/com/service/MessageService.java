@@ -23,7 +23,7 @@ public class MessageService {
 
     public Message sendMessage(String text, Long idFrom, Long idTo) throws Exception {
         Message message = new Message();
-        if (text.length() > 140 || !relationshipDAO.getRelationship(idFrom, idTo).getRelates().equals(FriendshipStatus.FRIEND))
+        if (text.length() > 140 || !FriendshipStatus.FRIEND.equals(relationshipDAO.getRelationship(idFrom, idTo).getRelates()))
             throw new ExceedLimits();
         Date date = new Date();
         message.setText(text);

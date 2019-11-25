@@ -14,7 +14,7 @@ public class ViewsExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ModelAndView wrongInput(Exception e) {
         log.error("Function was interrupted by wrong input ", e);
-        ModelAndView model = new ModelAndView("error");
+        ModelAndView model = new ModelAndView("error500");
         model.addObject("Exception", e);
         return model;
     }

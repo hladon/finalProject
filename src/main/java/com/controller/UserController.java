@@ -72,7 +72,7 @@ public class UserController extends HttpServlet {
         }
 
         if (user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return "error404";
         }
         log.info("User enter to page " + userId);
         return "profile";
