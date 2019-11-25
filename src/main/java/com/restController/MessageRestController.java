@@ -23,7 +23,7 @@ public class MessageRestController extends HttpServlet {
                                               @ModelAttribute Message message,
                                               @RequestParam long url) throws Exception {
         User user = (User) session.getAttribute("user");
-        messageService.sendMessage(message, user.getId(), url);
+        messageService.sendMessage(message, user, url);
         return new ResponseEntity<String>("Message send", HttpStatus.CREATED);
     }
 
