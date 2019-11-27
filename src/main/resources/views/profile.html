@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Profile</title>
 </head>
 <body>
 <div>
@@ -53,7 +53,6 @@
             <tr th:each="post : ${posts}">
                 <td><span th:text="${post.message}"> ID User </span></td>
                 <td><span th:text="${post.datePosted}"> Request </span></td>
-
             </tr>
             </tbody>
         </table>
