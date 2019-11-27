@@ -56,9 +56,7 @@ public class UserController extends HttpServlet {
         long id = userClient.getId();
         user = userDao.findById(userId);
         model.addAttribute("user", user);
-
-        //TODO look like a bad ides to store userPosted in session
-        String postFilter = (String) session.getAttribute("userPosted");
+        String postFilter = (String) session.getAttribute("filterId");
         List<Post> posts = postService.getPosts(postFilter, user, userId);
         model.addAttribute("posts", posts);
         if (id != userId) {

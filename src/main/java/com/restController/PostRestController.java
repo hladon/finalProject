@@ -41,13 +41,13 @@ public class PostRestController extends HttpServlet {
         if (postedId == null)
             return new ResponseEntity<String>("First select user ID", HttpStatus.BAD_REQUEST);
         Long user = Long.parseLong(postedId);
-        session.setAttribute("userPosted", user);
+        session.setAttribute("filterId", user);
         return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
     }
 
     @RequestMapping(path = "/addPostFilter", method = RequestMethod.GET)
     public ResponseEntity<String> addFilter(HttpSession session, @RequestParam String filter) {
-        session.setAttribute("userPosted", filter);
+        session.setAttribute("filterId", filter);
         return new ResponseEntity<String>("Reload page!", HttpStatus.ACCEPTED);
     }
 }
