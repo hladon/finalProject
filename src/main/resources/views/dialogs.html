@@ -18,10 +18,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="post : ${posts}">
-            <td><span th:text="${post.userPosted.id}"> ID User </span></td>
-            <td><span th:text="${post.message}"> Request </span></td>
-            <td><span th:text="${post.datePosted}"> Request </span></td>
+        <tr th:each="message : ${messages}">
+            <td><span th:text="${message.userFrom.id}"> ID User </span></td>
+            <td><span th:text="${message.message}"> Message </span></td>
+            <td><span th:text="${message.dateSent}"> Date send </span></td>
+            <td><span th:text="${message.?dateRead:'Unread'}"> Date read </span></td>
         </tr>
         </tbody>
     </table>

@@ -14,9 +14,19 @@ public class MessageDAO extends DAO<Message> {
     }
 
     private static final String GET_MESSAGES = "SELECT * FROM MESSAGE WHERE DATE_DELETED IS NULL AND " +
-            " ?1 IN (USER_TO,USER_FROM) AND ?2 IN (USER_TO,USER_FROM)  DATE_SEND<?3 AND ROWNUM<= 20 ORDER BY DATE_SEND DESC ";
+            " ?1 IN (USER_TO,USER_FROM) AND ?2 IN (USER_TO,USER_FROM) AND  DATE_SEND<?3 AND ROWNUM<= 20 ORDER BY DATE_SEND DESC ";
     private static final String DELETE_ALL_MESSAGES = "UPDATE MESSAGE SET DATE_DELETED=?1 WHERE  ?2 IN (USER_TO,USER_FROM)";
     private static final String DELETE_MESSAGE = "UPDATE MESSAGE SET DATE_DELETED=?1 WHERE  ID=?2";
+    private static final String LAST_MESSAGES="SELECT * FROM MESSAGE WHERE DATE_DELETED IS NULL AND USER_TO=?1 GROUP BY " +
+            "GROUP BY ";
+
+    public List<Message> getDialogsMessages(Long userId) throws InternalServerError{
+        try{
+
+        }catch (Exception e){
+            throw new InternalServerError(e.getMessage());
+        }
+    }
 
     public List<Message> getNextMessages(Long userId, Long userFromId, Date lastMessageDate) throws InternalServerError {
         try {

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Service
@@ -23,12 +24,14 @@ public class MessageService {
     @Autowired
     private RelationshipDAO relationshipDAO;
 
+    public List<Message> getDialogs(User user){
+
+    }
 
 
     public Message sendMessage(Message message, User user, Long idTo) throws Exception {
         if (message.getText().length() > 140 )
             throw new ExceedLimits();
-        //TODO you shouldn't get all relationship , it is a lot of info. just true is friends can be returned
         if (!relationshipDAO.getRelationship(user.getId(), idTo).getRelates().equals(FriendshipStatus.FRIEND))
             throw new NotFriend();
         Date date = new Date();
