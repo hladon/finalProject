@@ -12,17 +12,17 @@
         <thead>
         <tr>
             <th> ID User </th>
-            <th> Message </th>
-            <th> Date send </th>
-            <th> Date read </th>
+            <th> First Name </th>
+            <th> Last Name </th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="message : ${messages}">
-            <td><span th:text="${message.userFrom.id}"> ID User </span></td>
-            <td><span th:text="${message.message}"> Message </span></td>
-            <td><span th:text="${message.dateSent}"> Date send </span></td>
-            <td><span th:text="${message.?dateRead:'Unread'}"> Date read </span></td>
+        <tr th:each="user : ${users}">
+            <a th:href="@{/dialog(id=${user.id})}">
+            <td><span th:text="${user.id}"> ID User </span></td>
+            <td><span th:text="${user.firstName}"> First Name </span></td>
+            <td><span th:text="${user.lastName}"> Last Name </span></td>
+            </a>
         </tr>
         </tbody>
     </table>

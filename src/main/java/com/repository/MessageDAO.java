@@ -2,6 +2,7 @@ package com.repository;
 
 import com.Exceptions.InternalServerError;
 import com.models.Message;
+import com.models.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -17,12 +18,15 @@ public class MessageDAO extends DAO<Message> {
             " ?1 IN (USER_TO,USER_FROM) AND ?2 IN (USER_TO,USER_FROM) AND  DATE_SEND<?3 AND ROWNUM<= 20 ORDER BY DATE_SEND DESC ";
     private static final String DELETE_ALL_MESSAGES = "UPDATE MESSAGE SET DATE_DELETED=?1 WHERE  ?2 IN (USER_TO,USER_FROM)";
     private static final String DELETE_MESSAGE = "UPDATE MESSAGE SET DATE_DELETED=?1 WHERE  ID=?2";
-    private static final String LAST_MESSAGES="SELECT * FROM MESSAGE WHERE DATE_DELETED IS NULL AND USER_TO=?1 GROUP BY " +
-            "GROUP BY ";
+    private static final String LAST_DIALOGS="SELECT * FROM USER_PROFILE WHERE ID IN (SELECT DISTINCT(USER_FROM) " +
+            "FROM MESSAGE WHERE USER_TO=?1 AND DATE_DELETED IS NULL " +
+            "UNION SELECT DISTINCT(USER_TO) FROM MESSAGE WHERE USER_FROM=?1 AND DATE_DELETED IS NULL) ";
 
-    public List<Message> getDialogsMessages(Long userId) throws InternalServerError{
+    public List<User> getUserWithDialogs(Long userId) throws InternalServerError{
         try{
-
+            return entityManager.createNativeQuery(LAST_DIALOGS,User.class)
+                    .setParameter(1,userId)
+                    .getResultList();
         }catch (Exception e){
             throw new InternalServerError(e.getMessage());
         }

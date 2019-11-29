@@ -18,9 +18,9 @@ public class MessageController extends HttpServlet {
     private MessageService messageService;
 
     @RequestMapping(path = "/dialogs", method = RequestMethod.GET)
-    public String dialogs(Model model, HttpSession session){
+    public String dialogs(Model model, HttpSession session) throws Exception{
         User user=(User)session.getAttribute("user");
-        model.addAttribute("messages",messageService.getDialogs(user));
+        model.addAttribute("users",messageService.getUserWithDialogs(user));
         return "dialogs";
     }
 }

@@ -24,13 +24,13 @@ public class MessageService {
     @Autowired
     private RelationshipDAO relationshipDAO;
 
-    public List<Message> getDialogs(User user){
-
+    public List<User> getUserWithDialogs(User user) throws Exception {
+        return messageDAO.getUserWithDialogs(user.getId());
     }
 
 
     public Message sendMessage(Message message, User user, Long idTo) throws Exception {
-        if (message.getText().length() > 140 )
+        if (message.getText().length() > 140)
             throw new ExceedLimits();
         if (!relationshipDAO.getRelationship(user.getId(), idTo).getRelates().equals(FriendshipStatus.FRIEND))
             throw new NotFriend();
