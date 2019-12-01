@@ -146,6 +146,7 @@
             data: $('#message').serialize(),
             success: function success() {
                 document.getElementById("message").style.display = "none";
+                window.location.reload()
             },
             error: function error(xhr) {
                 alert(xhr.responseText);

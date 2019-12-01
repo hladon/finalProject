@@ -5,24 +5,49 @@
     <title>Messages</title>
 </head>
 <body>
-<div>
+<div class="container">
     <h3> Current dialog </h3>
-    <table>
+    <table rules="rows" cellpadding="3px">
         <thead>
         <tr>
-            <th> ID User </th>
             <th> Message </th>
-            <th> Date </th>
+            <th> Date read </th>
+            <th> Date edited </th>
+            <th> Check </th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="post : ${posts}">
-            <td><span th:text="${post.userPosted.id}"> ID User </span></td>
-            <td><span th:text="${post.message}"> Request </span></td>
-            <td><span th:text="${post.datePosted}"> Request </span></td>
+        <tr th:each="message,iterStat : ${messages}">
+            <td><span th:text="${message.text}"> Request </span></td>
+            <td><span th:text="${#dates.formatISO(message.dateRead)}?:'UN READ'"> Request </span></td>
+            <td><span th:text="${#dates.formatISO(message.dateEdited)}?:''"> Request </span></td>
+            <td> <input class="check" type="checkbox" th:value="${message.id}"> </td>
         </tr>
         </tbody>
+        <tfoot>
+            <tr>
+                <button  onclick="" th:value="${messages[0].id}"> Previous </button>
+            </tr>
+            <tr>
+                 <button  onclick="nextMessages()" th:value="${messages[iterStat.size-1].id}" disabled="${iterStat.size&ge;20}"> Next</button>
+            </tr>
+            <tr>
+                 <button  onclick=""> Delete pointed</button>
+            </tr>
+        </tfoot>
     </table>
 </div>
 </body>
+<style>
+    .container{
+        width: 50%;
+    }
+
+</style>
+<script>
+    function nextMessages(id) {
+        var url=window.location;
+        window.open(url+'?lastMessageId=' + id, '_self');
+    }
+</script>
 </html>

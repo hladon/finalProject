@@ -28,6 +28,10 @@ public class MessageService {
         return messageDAO.getUserWithDialogs(user.getId());
     }
 
+    public List<Message> getDialog(Long userId,Long friendId,Long lastMessageId) throws Exception{
+        return messageDAO.getNextMessages(userId,friendId, lastMessageId);
+    }
+
 
     public Message sendMessage(Message message, User user, Long idTo) throws Exception {
         if (message.getText().length() > 140)

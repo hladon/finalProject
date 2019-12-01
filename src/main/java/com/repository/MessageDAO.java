@@ -15,7 +15,7 @@ public class MessageDAO extends DAO<Message> {
     }
 
     private static final String GET_MESSAGES = "SELECT * FROM MESSAGE WHERE DATE_DELETED IS NULL AND " +
-            " ?1 IN (USER_TO,USER_FROM) AND ?2 IN (USER_TO,USER_FROM) AND  DATE_SEND<?3 AND ROWNUM<= 20 ORDER BY DATE_SEND DESC ";
+            " ?1 IN (USER_TO,USER_FROM) AND ?2 IN (USER_TO,USER_FROM) AND  ID<?3 AND ROWNUM<= 20 ORDER BY DATE_SEND DESC ";
     private static final String DELETE_ALL_MESSAGES = "UPDATE MESSAGE SET DATE_DELETED=?1 WHERE  ?2 IN (USER_TO,USER_FROM)";
     private static final String DELETE_MESSAGE = "UPDATE MESSAGE SET DATE_DELETED=?1 WHERE  ID=?2";
     private static final String LAST_DIALOGS="SELECT * FROM USER_PROFILE WHERE ID IN (SELECT DISTINCT(USER_FROM) " +
@@ -32,12 +32,14 @@ public class MessageDAO extends DAO<Message> {
         }
     }
 
-    public List<Message> getNextMessages(Long userId, Long userFromId, Date lastMessageDate) throws InternalServerError {
+    public List<Message> getNextMessages(Long userId, Long userFromId, Long lastMessageId) throws InternalServerError {
         try {
+            if (lastMessageId==null)
+                lastMessageId=Long.MAX_VALUE;
             return entityManager.createNativeQuery(GET_MESSAGES, Message.class)
                     .setParameter(1, userId)
                     .setParameter(2, userFromId)
-                    .setParameter(3, lastMessageDate)
+                    .setParameter(3, lastMessageId)
                     .getResultList();
         } catch (Exception e) {
             throw new InternalServerError(e.getMessage());

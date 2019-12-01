@@ -16,13 +16,13 @@
     $("#login-form").submit(function () {
         event.preventDefault();
         $.ajax({
-            url: "login",
-            type: "POST",
-            data: $('#login-form').serialize(),
-            success: function success(id) {
-                alert('You are log in!')},
-
-                error:function error(xhr) {
+                url: "login",
+                type: "POST",
+                data: $('#login-form').serialize(),
+                success: function success(id) {
+                    window.open('../user/' + id, '_self');
+                },
+                error: function error(xhr) {
                     alert(xhr.responseText);
                 }
             }

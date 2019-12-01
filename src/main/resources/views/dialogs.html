@@ -17,15 +17,19 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user : ${users}">
-            <a th:href="@{/dialog(id=${user.id})}">
+        <tr class="row"  th:onclick="'window.location=\''+@{../dialog(friendId=${user.id})}+'\''" th:each="user : ${users}">
             <td><span th:text="${user.id}"> ID User </span></td>
             <td><span th:text="${user.firstName}"> First Name </span></td>
             <td><span th:text="${user.lastName}"> Last Name </span></td>
-            </a>
         </tr>
         </tbody>
     </table>
 </div>
 </body>
+<style>
+    .row:hover{
+        background-color: aquamarine;
+        cursor: pointer;
+    }
+</style>
 </html>

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
@@ -23,4 +24,13 @@ public class MessageController extends HttpServlet {
         model.addAttribute("users",messageService.getUserWithDialogs(user));
         return "dialogs";
     }
+
+    @RequestMapping(path = "/dialog", method = RequestMethod.GET)
+    public String dialog(@RequestParam Long friendId,@RequestParam(required = false) Long lastMessageId,
+                         HttpSession session, Model model) throws Exception{
+        User user=(User)session.getAttribute("user");
+        model.addAttribute("messages",messageService.getDialog(user.getId(),friendId,lastMessageId));
+        return "dialog";
+    }
+
 }
