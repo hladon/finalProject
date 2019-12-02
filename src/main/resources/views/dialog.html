@@ -26,10 +26,10 @@
         </tbody>
         <tfoot>
             <tr>
-                <button  onclick="" th:value="${messages[0].id}"> Previous </button>
+                <button  onclick="previousMessages()" th:value="${messages[0].id}"> Previous </button>
             </tr>
             <tr>
-                 <button  onclick="nextMessages()" th:value="${messages[iterStat.size-1].id}" disabled="${iterStat.size&ge;20}"> Next</button>
+                 <button id="next" onclick="nextMessages()" th:value="${messages[19].id}?:end" > Next</button>
             </tr>
             <tr>
                  <button  onclick=""> Delete pointed</button>
@@ -45,9 +45,22 @@
 
 </style>
 <script>
-    function nextMessages(id) {
-        var url=window.location;
-        window.open(url+'?lastMessageId=' + id, '_self');
+    window.onload=function(){
+    var el=document.getElementById('next');
+    if(el.value='end')
+    el.disabled=true;
     }
+
+
+    function nextMessages(elem) {
+        var url=window.location;
+        window.open(url+'?lastMessageId=' + elem.value, '_self');
+    }
+
+    function previousMessages(elem) {
+        var url=window.location;
+        window.open(url+'?lastMessageId=' + elem.value, '_self');
+    }
+
 </script>
 </html>
