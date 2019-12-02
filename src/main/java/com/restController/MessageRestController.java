@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 
 @RestController
@@ -28,9 +29,10 @@ public class MessageRestController extends HttpServlet {
     }
 
     @RequestMapping(path = "/message", method = RequestMethod.DELETE)
-    public void deleteMessage(HttpSession session, @RequestParam long id) throws Exception {
+    public ResponseEntity<String> deleteMessage(HttpSession session, @RequestParam List<Long> ids) throws Exception {
         User user = (User) session.getAttribute("user");
-        messageService.deleteMessage(id, user.getId());
+        messageService.deleteMessage( ids);
+        return new ResponseEntity<String>( HttpStatus.ACCEPTED);
     }
 
     @RequestMapping(path = "/message", method = RequestMethod.PUT)

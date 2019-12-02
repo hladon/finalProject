@@ -10,6 +10,7 @@ import com.repository.RelationshipDAO;
 import com.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -28,8 +29,8 @@ public class MessageService {
         return messageDAO.getUserWithDialogs(user.getId());
     }
 
-    public List<Message> getDialog(Long userId,Long friendId,Long lastMessageId) throws Exception{
-        return messageDAO.getNextMessages(userId,friendId, lastMessageId);
+    public List<Message> getDialog(Long userId, Long friendId, Long lastMessageId) throws Exception {
+        return messageDAO.getNextMessages(userId, friendId, lastMessageId);
     }
 
 
@@ -47,12 +48,13 @@ public class MessageService {
         return message;
     }
 
-    public void deleteMessage(Long id, Long userId) throws Exception {
-        Message message = messageDAO.findById(id);
-        if (message.getUserFrom().getId() != userId)
-            throw new ExceedLimits();
-        message.setDateDeleted(new Date());
-        messageDAO.update(message);
+    @Transactional
+    public void deleteMessage(List<Long> ids) throws Exception {
+        for (Long id : ids) {
+            Message message = messageDAO.findById(id);
+            message.setDateDeleted(new Date());
+            messageDAO.update(message);
+        }
     }
 
     public Message editeMessage(String text, Long id, Long userId) throws Exception {
