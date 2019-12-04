@@ -25,7 +25,7 @@ public class Message {
     private Date dateDeleted;
     @Column(name = "DATE_READ")
     private Date dateRead;
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "USER_FROM", nullable = false)
     private User userFrom;
     @ManyToOne

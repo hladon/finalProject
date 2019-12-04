@@ -11,25 +11,44 @@
     <table>
         <thead>
         <tr>
-            <th> ID User </th>
-            <th> First Name </th>
-            <th> Last Name </th>
+            Dialogs
         </tr>
         </thead>
         <tbody>
-        <tr class="row"  th:onclick="'window.location=\''+@{../dialog(friendId=${user.id})}+'\''" th:each="user : ${users}">
-            <td><span th:text="${user.id}"> ID User </span></td>
-            <td><span th:text="${user.firstName}"> First Name </span></td>
-            <td><span th:text="${user.lastName}"> Last Name </span></td>
+        <tr th:each="user : ${users}">
+            <th class="row" th:onclick="'window.location=\''+@{../dialog(friendId=${user.id})}+'\''">
+                <span th:text="${user.id + ' '+user.firstName+' '+user.lastName}"> dialog</span></th>
+            <td>
+                <button onclick="deleteDialog(this.value)" th:value="${user.id}"> Delete</button>
+            </td>
         </tr>
         </tbody>
     </table>
 </div>
 </body>
 <style>
-    .row:hover{
+    .row:hover {
         background-color: aquamarine;
         cursor: pointer;
     }
 </style>
+<script language="JavaScript" type="text/javascript"
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    function deleteDialog(value) {
+        event.preventDefault();
+        $.ajax({
+                url: "/deleteDialog",
+                type: "GET",
+                data: {friendId: value},
+                success: function success() {
+                    window.location.reload(true);
+                },
+                error: function error(xhr) {
+                    alert(xhr.responseText);
+                }
+            }
+        )
+    }
+</script>
 </html>

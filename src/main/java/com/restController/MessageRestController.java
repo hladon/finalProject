@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 
 @RestController
@@ -28,11 +27,11 @@ public class MessageRestController extends HttpServlet {
         return new ResponseEntity<String>("Message send", HttpStatus.CREATED);
     }
 
-    @RequestMapping(path = "/message", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteMessage(HttpSession session, @RequestParam List<Long> ids) throws Exception {
+    @RequestMapping(path = "/messageRemove", method = RequestMethod.POST)
+    public ResponseEntity<String> deleteMessage(HttpSession session, @RequestParam(value = "ids[]") long[] ids) throws Exception {
         User user = (User) session.getAttribute("user");
-        messageService.deleteMessage( ids);
-        return new ResponseEntity<String>( HttpStatus.ACCEPTED);
+        messageService.deleteMessage(ids, user);
+        return new ResponseEntity<String>(HttpStatus.ACCEPTED);
     }
 
     @RequestMapping(path = "/message", method = RequestMethod.PUT)
@@ -44,5 +43,10 @@ public class MessageRestController extends HttpServlet {
         return new ResponseEntity<String>("Message send", HttpStatus.CREATED);
     }
 
-
+    @RequestMapping(path = "/deleteDialog", method = RequestMethod.GET)
+    public ResponseEntity<String> deleteDialog(HttpSession session, @RequestParam(required = false) long friendId) throws Exception {
+        User user = (User) session.getAttribute("user");
+        messageService.deleteDialog(user.getId(), friendId);
+        return new ResponseEntity<String>(HttpStatus.ACCEPTED);
+    }
 }

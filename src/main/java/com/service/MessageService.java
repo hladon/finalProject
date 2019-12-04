@@ -1,6 +1,7 @@
 package com.service;
 
 import com.Exceptions.ExceedLimits;
+import com.Exceptions.NotAuthorized;
 import com.Exceptions.NotFriend;
 import com.models.FriendshipStatus;
 import com.models.Message;
@@ -48,10 +49,18 @@ public class MessageService {
         return message;
     }
 
+    public void deleteDialog(Long userId, Long friendId) throws Exception {
+        messageDAO.deleteDialog(userId, friendId);
+    }
+
     @Transactional
-    public void deleteMessage(List<Long> ids) throws Exception {
-        for (Long id : ids) {
+    public void deleteMessage(long[] ids, User user) throws Exception {
+        if (ids.length > 10)
+            throw new ExceedLimits();
+        for (long id : ids) {
             Message message = messageDAO.findById(id);
+            if (!message.getUserFrom().equals(user))
+                throw new NotAuthorized();
             message.setDateDeleted(new Date());
             messageDAO.update(message);
         }
