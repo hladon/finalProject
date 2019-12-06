@@ -2,14 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>Title</title>
 </head>
 <body>
-<form id="login-form">
-    <p>Phone <input name="phone" required></p>
-    <p>Password <input name="password" required></p>
-    <p><input type="submit" value="login"></p>
+<div class="container-flex">
+    <div class="row justify-content-md-center">
+<form class="form-group col-xl-3" id="login-form">
+    <div class="form-group">
+    <label for="phone">Phone</label>
+     <input class="form-control" id="phone" name="phone" required>
+    </div>
+    <div class="form-group">
+    <label for="password">Password</label>
+     <input class="form-control" id="password" name="password" required>
+    </div>
+    <input class="btn btn-primary btn-block" type="submit" value="login">
 </form>
+    </div>
+</div>
+
+</body>
 <script language="JavaScript" type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -30,5 +43,4 @@
     })
 
 </script>
-</body>
 </html>

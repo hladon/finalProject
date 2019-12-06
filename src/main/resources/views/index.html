@@ -2,27 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>Home Page</title>
 </head>
-<header>Header</header>
+
 <body>
-<h1>Welcome!</h1>
-<h2>Register new user</h2>
-<form id="registration-form">
-    <p>FirstName <input name="firstName" required> </p>
-    <p>LastName <input name="lastName"></p>
-    <p>Phone <input name="phone" required></p>
-    <p>Password <input name="password" required></p>
-    <p>Country <input name="country"> </p>
-    <p>City <input name="city"></p>
-    <p>Age <input type="number" min="1" max="100" step="1" name="age"></p>
-    <p>Status <input name="relationshipStatus"></p>
-    <p> Religion <input name="religion"></p>
-    <p> School <input name="school"></p>
-    <p> University <input name="university"></p>
-    <p>  <input type="submit" value="registration"></p>
+<div class="container-fluid">
+
+<h2 class="text-primary text-center">Welcome!</h2>
+<h3 class="text-center">Register new user</h3>
+    <div class="row justify-content-md-center">
+
+<form id="registration-form col-xl-4">
+    <div class="row">
+        <div class="col-xl-4">
+    <p>FirstName  </p>
+        </div>
+        <div class="col-xl-8">
+        <input name="firstName" required>
+    </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <p>Phone  </p>
+        </div>
+        <div class="col-xl-8">
+            <input name="phone" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <p>Password  </p>
+        </div>
+        <div class="col-xl-8">
+            <input name="password" required>
+        </div>
+    </div><div class="row">
+    <div class="col-xl-4">
+        <p>Country  </p>
+    </div>
+    <div class="col-xl-8">
+        <input name="country">
+    </div>
+</div><div class="row">
+    <div class="col-xl-4">
+        <p>City  </p>
+    </div>
+    <div class="col-xl-8">
+        <input name="city">
+    </div>
+</div><div class="row">
+    <div class="col-xl-4">
+        <p>Age  </p>
+    </div>
+    <div class="col-xl-8">
+        <input type="number" min="1" max="100" step="1" name="age">
+    </div>
+</div><div class="row">
+    <div class="col-xl-4">
+        <p>Status  </p>
+    </div>
+    <div class="col-xl-8">
+        <input name="relationshipStatus">
+    </div>
+</div><div class="row">
+    <div class="col-xl-4">
+        <p>Religion  </p>
+    </div>
+    <div class="col-xl-8">
+        <input name="religion">
+    </div>
+</div><div class="row">
+    <div class="col-xl-4">
+        <p>School  </p>
+    </div>
+    <div class="col-xl-8">
+         <input name="school">
+    </div>
+</div><div class="row">
+    <div class="col-xl-4">
+        <p>University  </p>
+    </div>
+    <div class="col-xl-8">
+        <input name="university">
+    </div>
+</div>
+    <div class="row">
+    <button class="btn btn-primary btn-block" type="submit">registration</button>
+    <a class="btn btn-info btn-block"   href="/login">Login</a>
+    </div>
 </form>
-<a href="/login">Login</a>
+
+
+    </div>
+</div>
+</body>
 <script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
 <script language="JavaScript" type="text/javascript">
     $("#registration-form").submit(function(){
@@ -40,6 +114,4 @@
     });
 
 </script>
-</body>
-
 </html>
