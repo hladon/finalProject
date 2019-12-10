@@ -109,7 +109,7 @@
     function sendFilter(value){
      event.preventDefault();
         $.ajax({
-            url:"http://localhost:8081/addPostFilter",
+            url:"http://localhost:8081/user/addPostFilter",
             type:"GET",
             data:"filter="+value,
             success: function success (){
@@ -123,7 +123,7 @@
     $("#post-form").submit(function(){
         event.preventDefault();
         $.ajax({
-            url:"http://localhost:8081/addPost",
+            url:"http://localhost:8081/user/addPost",
             type:"POST",
             data:$('#post-form').serialize(),
             success: function success (){
@@ -136,7 +136,7 @@
     $("#postId-form").submit(function(){
         event.preventDefault();
         $.ajax({
-            url:"http://localhost:8081/addPostId",
+            url:"http://localhost:8081/user/addPostId",
             type:"GET",
             data:$('#postId-form').serialize(),
             success: function success (){

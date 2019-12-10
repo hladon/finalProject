@@ -18,14 +18,14 @@ public class MessageController extends HttpServlet {
     @Autowired
     private MessageService messageService;
 
-    @RequestMapping(path = "/dialogs", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/dialogs", method = RequestMethod.GET)
     public String dialogs(Model model, HttpSession session) throws Exception{
         User user=(User)session.getAttribute("user");
         model.addAttribute("users",messageService.getUserWithDialogs(user));
         return "dialogs";
     }
 
-    @RequestMapping(path = "/dialog", method = RequestMethod.GET)
+    @RequestMapping(path = "/user/dialog", method = RequestMethod.GET)
     public String dialog(@RequestParam Long friendId,@RequestParam(required = false) Long lastMessageId,
                          HttpSession session, Model model) throws Exception{
         User user=(User)session.getAttribute("user");

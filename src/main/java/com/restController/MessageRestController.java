@@ -18,7 +18,7 @@ public class MessageRestController extends HttpServlet {
     @Autowired
     private MessageService messageService;
 
-    @RequestMapping(path = "/message", method = RequestMethod.POST)
+    @RequestMapping(path = "user/message", method = RequestMethod.POST)
     public ResponseEntity<String> sendMessage(HttpSession session,
                                               @ModelAttribute Message message,
                                               @RequestParam long url) throws Exception {

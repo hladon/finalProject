@@ -1,12 +1,17 @@
 package com.config;
 
+import com.models.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.sql.DataSource;
 
+@EnableWebSecurity
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -15,8 +20,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
-                .authoritiesByUsernameQuery("SELECT u.phone, r.role FROM user INNER JOIN USER_ROLE ur ON " +
-                        "u.id=ur.userId where u.phone=?")
+                .authoritiesByUsernameQuery("SELECT u.phone, ur.role FROM user INNER JOIN ROLE r ON " +
+                        "u.id=r.user_id WHERE u.phone=?")
                 .dataSource(dataSource);
     }
 
@@ -25,6 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("")
+                .antMatchers("/login").permitAll()
+                .antMatchers("/user*").hasAuthority(Role.USER.toString())
+                .antMatchers("/**").hasAuthority(Role.ADMIN.toString())
+                .anyRequest();
     }
 }

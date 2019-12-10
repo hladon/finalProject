@@ -51,5 +51,7 @@ public class User {
     @OneToMany(cascade=CascadeType.ALL, mappedBy = "userTo")
     private List<Message> messagesReceived;
     //private String[] interests;
+    @ManyToMany
+    private List<Role> roles;
 
 }
