@@ -3,6 +3,7 @@ package com.config;
 import com.models.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,8 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/user*").hasAuthority(Role.USER.toString())
-                .antMatchers("/**").hasAuthority(Role.ADMIN.toString())
+                .antMatchers("/user*").hasAuthority("USER")
+                .antMatchers("/**").hasAuthority("ADMIN")
                 .anyRequest();
     }
 }
