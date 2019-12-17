@@ -52,6 +52,10 @@ public class User {
     private List<Message> messagesReceived;
     //private String[] interests;
     @ManyToMany
+    @JoinTable(name = "USERS_ROLES",
+            joinColumns =@JoinColumn(name = "USERS"),
+            inverseJoinColumns =@JoinColumn(name = "ROLE")
+    )
     private List<Role> roles;
 
 }
