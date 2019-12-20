@@ -25,18 +25,18 @@ public class UserRestController extends HttpServlet {
 
     private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(UserRestController.class);
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception {
-        User user = null;
-        user = userDao.isExist(pass.getPhone());
-        if (user == null || !user.getPassword().equals(pass.getPassword())) {
-            log.info("Log in failure");
-            return new ResponseEntity<String>("Wrong phone or password", HttpStatus.NOT_FOUND);
-        }
-        session.setAttribute("user", user);
-        log.info("User log in!");
-        return new ResponseEntity<String>(user.getId().toString(),HttpStatus.ACCEPTED);
-    }
+//    @RequestMapping(path = "/login", method = RequestMethod.POST)
+//    public ResponseEntity<String> login(@ModelAttribute Password pass, HttpSession session) throws Exception {
+//        User user = null;
+//        user = userDao.isExist(pass.getPhone());
+//        if (user == null || !user.getPassword().equals(pass.getPassword())) {
+//            log.info("Log in failure");
+//            return new ResponseEntity<String>("Wrong phone or password", HttpStatus.NOT_FOUND);
+//        }
+//        session.setAttribute("user", user);
+//        log.info("User log in!");
+//        return new ResponseEntity<String>(user.getId().toString(),HttpStatus.ACCEPTED);
+//    }
 
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@ModelAttribute User user) throws Exception {

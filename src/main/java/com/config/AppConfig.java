@@ -1,5 +1,6 @@
 package com.config;
 
+import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
@@ -71,8 +73,8 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public DriverManagerDataSource dataSource(){
-        DriverManagerDataSource dataSource=new DriverManagerDataSource();
+    public DataSource dataSource(){
+        BasicDataSource dataSource=new BasicDataSource();
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
         dataSource.setUrl("jdbc:oracle:thin:@gromcode-lessons.ctmtirr3ce0v.us-east-2.rds.amazonaws.com:1521:orcl");
         dataSource.setUsername("main");
