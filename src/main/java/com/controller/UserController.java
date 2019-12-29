@@ -2,19 +2,16 @@ package com.controller;
 
 import com.Exceptions.NotAuthorized;
 import com.models.Post;
-import com.models.Relationship;
 import com.models.User;
 import com.repository.UserDao;
 import com.service.PostService;
 import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
@@ -34,6 +31,11 @@ public class UserController extends HttpServlet {
 
     private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(UserController.class);
 
+    @RequestMapping(path = "/test", method = RequestMethod.GET)
+    public String doLogin( HttpSession session) throws Exception {
+        String page="/user/"+((User)session.getAttribute("user")).getId();
+        return page ;
+    }
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String main() {

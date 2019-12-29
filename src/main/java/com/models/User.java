@@ -3,6 +3,7 @@ package com.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -51,11 +52,30 @@ public class User {
     @OneToMany(cascade=CascadeType.ALL, mappedBy = "userTo")
     private List<Message> messagesReceived;
     //private String[] interests;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USERS_ROLES",
             joinColumns =@JoinColumn(name = "USERS"),
             inverseJoinColumns =@JoinColumn(name = "ROLE")
     )
     private List<Role> roles;
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", age=" + age +
+                ", dateRegistered=" + dateRegistered +
+                ", dateLastActive=" + dateLastActive +
+                ", relationshipStatus='" + relationshipStatus + '\'' +
+                ", religion='" + religion + '\'' +
+                ", school='" + school + '\'' +
+                ", university='" + university + '\'' +
+                '}';
+    }
 }

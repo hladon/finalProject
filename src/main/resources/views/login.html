@@ -8,10 +8,10 @@
 <body>
 <div class="container-flex">
     <div class="row justify-content-md-center  ">
-<form class="form-group col-xl-3 " id="login-form">
+<form class="form-group col-xl-3 " id="login-form" action="/login" method="post">
     <div class="form-group">
-    <label for="phone">Phone</label>
-     <input class="form-control" id="phone" name="phone" required>
+    <label for="username">Phone</label>
+     <input class="form-control" id="username" name="username" required>
     </div>
     <div class="form-group">
     <label for="password">Password</label>
@@ -25,22 +25,22 @@
 </body>
 <script language="JavaScript" type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script language="JavaScript" type="text/javascript">
-    $("#login-form").submit(function () {
-        event.preventDefault();
-        $.ajax({
-                url: "login",
-                type: "POST",
-                data: $('#login-form').serialize(),
-                success: function success(id) {
-                    window.open('../user/' + id, '_self');
-                },
-                error: function error(xhr) {
-                    alert(xhr.responseText);
-                }
-            }
-        )
-    })
+<!--<script language="JavaScript" type="text/javascript">-->
+    <!--$("#login-form").submit(function () {-->
+        <!--event.preventDefault();-->
+        <!--$.ajax({-->
+                <!--url: "login",-->
+                <!--type: "POST",-->
+                <!--data: $('#login-form').serialize(),-->
+                <!--success: function success(id) {-->
+                    <!--window.open('../user/' + id, '_self');-->
+                <!--},-->
+                <!--error: function error(xhr) {-->
+                    <!--alert(xhr.responseText);-->
+                <!--}-->
+            <!--}-->
+        <!--)-->
+    <!--})-->
 
-</script>
+<!--</script>-->
 </html>

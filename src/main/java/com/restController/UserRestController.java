@@ -38,6 +38,8 @@ public class UserRestController extends HttpServlet {
 //        return new ResponseEntity<String>(user.getId().toString(),HttpStatus.ACCEPTED);
 //    }
 
+
+
     @RequestMapping(path = "/user-registration", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@ModelAttribute User user) throws Exception {
         if (userService.registerUser(user) == null)
