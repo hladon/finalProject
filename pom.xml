@@ -11,7 +11,7 @@
 
     <properties>
         <springframework.version>5.1.5.RELEASE</springframework.version>
-        <spring.securiry>4.2.13.RELEASE</spring.securiry>
+        <spring.securiry>5.3.3.RELEASE</spring.securiry>
     </properties>
 
     <dependencies>
